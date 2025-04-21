@@ -1,22 +1,23 @@
 package com.iafenvoy.ghast.entity;
 
-import com.iafenvoy.ghast.entity.goal.FollowHarnessGoal;
-import com.iafenvoy.ghast.entity.goal.HappyGhastLookAtEntityGoal;
-import com.iafenvoy.ghast.entity.goal.HappyGhastSwimGoal;
-import com.iafenvoy.ghast.entity.goal.HappyGhastWanderAroundGoal;
+import com.google.common.collect.ImmutableList;
+import com.iafenvoy.ghast.entity.goal.*;
 import com.iafenvoy.ghast.item.HarnessItem;
 import com.iafenvoy.ghast.mixin.LivingEntityAccessor;
 import com.iafenvoy.ghast.registry.HGEntities;
 import com.iafenvoy.ghast.registry.HGSounds;
 import com.iafenvoy.ghast.registry.HGTags;
+import com.mojang.serialization.Dynamic;
 import it.unimi.dsi.fastutil.floats.FloatFloatImmutablePair;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.*;
+import net.minecraft.entity.ai.brain.Activity;
+import net.minecraft.entity.ai.brain.Brain;
+import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.control.FlightMoveControl;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
-import net.minecraft.entity.ai.goal.TemptGoal;
 import net.minecraft.entity.ai.pathing.BirdNavigation;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
@@ -31,21 +32,23 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.thrown.PotionEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
+import net.minecraft.world.LocalDifficulty;
+import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedList;
+import java.util.Optional;
 import java.util.Queue;
+import java.util.Set;
 
 public class HappyGhastEntity extends AnimalEntity {
     private static final double STANDARD_RIDER_OFFSET = 1.35;
@@ -60,6 +63,23 @@ public class HappyGhastEntity extends AnimalEntity {
         this.setPersistent();
         this.moveControl = new FlightMoveControl(this, 10, true);
         this.setEquipmentDropChance(EquipmentSlot.CHEST, 1);
+    }
+
+    @Override
+    protected Brain.Profile<HappyGhastEntity> createBrainProfile() {
+        return Brain.createProfile(ImmutableList.of(MemoryModuleType.HOME), ImmutableList.of());
+    }
+
+    @Override
+    protected Brain<?> deserializeBrain(Dynamic<?> dynamic) {
+        return create(this.createBrainProfile().deserialize(dynamic));
+    }
+
+    protected static Brain<?> create(Brain<HappyGhastEntity> brain) {
+        brain.setCoreActivities(Set.of(Activity.CORE));
+        brain.setDefaultActivity(Activity.IDLE);
+        brain.resetPossibleActivities();
+        return brain;
     }
 
     @Override
@@ -87,8 +107,8 @@ public class HappyGhastEntity extends AnimalEntity {
     @Override
     protected void initGoals() {
         super.initGoals();
-        this.goalSelector.add(1, new TemptGoal(this, 1, Ingredient.ofItems(Items.SNOWBALL), false));
-        this.goalSelector.add(1, new FollowHarnessGoal(this));
+        this.goalSelector.add(1, new HappyGhastTemptGoal(this, 1, Ingredient.ofItems(Items.SNOWBALL), false));
+        this.goalSelector.add(1, new HappyGhastFollowHarnessGoal(this));
         this.goalSelector.add(2, new HappyGhastLookAtEntityGoal(this, PlayerEntity.class, 128.0F));
         this.goalSelector.add(4, new HappyGhastWanderAroundGoal(this));
         this.goalSelector.add(5, new LookAroundGoal(this));
@@ -135,8 +155,10 @@ public class HappyGhastEntity extends AnimalEntity {
     @Override
     protected void removePassenger(Entity passenger) {
         super.removePassenger(passenger);
-        if (!this.hasPassengers())
+        if (!this.hasPassengers()) {
             this.getWorld().playSound(null, this.getX(), this.getY(), this.getZ(), HGSounds.ENTITY_HAPPY_GHAST_HARNESS_GOGGLES_UP.get(), this.getSoundCategory(), 1, 1);
+            this.rememberHomePos();
+        }
     }
 
     @Override
@@ -164,8 +186,6 @@ public class HappyGhastEntity extends AnimalEntity {
             h = j;
             g = i;
         }
-        if (((LivingEntityAccessor) controllingPlayer).isJumping())
-            h += 0.5F;
         return new Vec3d(f, h, g).multiply(0.18F);
     }
 
@@ -279,7 +299,7 @@ public class HappyGhastEntity extends AnimalEntity {
     }
 
     @Override
-    public void travel(Vec3d dir) {
+    public void travel(Vec3d movementInput) {
         Entity entity = this.getPassengerList().isEmpty() ? null : this.getPassengerList().get(0);
         if (entity != null) {
             this.rotationCache.add(new FloatFloatImmutablePair(entity.getPitch(), entity.getYaw()));
@@ -294,7 +314,9 @@ public class HappyGhastEntity extends AnimalEntity {
             if (entity instanceof LivingEntity passenger) {
                 this.setMovementSpeed((float) this.getAttributeValue(EntityAttributes.GENERIC_FLYING_SPEED));
                 float forward = passenger.forwardSpeed;
-                super.travel(new Vec3d(0.0D, entity.getRotationVector().y * forward * 0.75D, forward * 1.65D * (1.0D - Math.abs(entity.getRotationVector().y))));
+                double y = entity.getRotationVector().y * forward * 0.75D;
+                if (((LivingEntityAccessor) passenger).isJumping()) y += 0.5F;
+                super.travel(new Vec3d(0.0D, y, forward * 1.65D * (1.0D - Math.abs(entity.getRotationVector().y))));
             }
             double d1 = this.getX() - this.prevX;
             double d0 = this.getZ() - this.prevZ;
@@ -302,9 +324,7 @@ public class HappyGhastEntity extends AnimalEntity {
             this.limbAnimator.setSpeed(this.limbAnimator.getSpeed() + (f1 - this.limbAnimator.getSpeed()) * 0.4F);
             this.limbAnimator.getPos(this.limbAnimator.getPos() + this.limbAnimator.getSpeed());
             this.updateLimbs(true);
-            return;
-        }
-        super.travel(dir);
+        } else super.travel(movementInput);
     }
 
     @Override
@@ -366,10 +386,35 @@ public class HappyGhastEntity extends AnimalEntity {
         EntityAttributeInstance kbResist = this.getAttributeInstance(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE);
         if (kbResist != null)
             kbResist.setBaseValue(this.hasPlayerOnTop() ? 1 : this.getPassengerList().size() * 0.05);
+        if (this.outOfWanderRange()) this.rememberHomePos();
+    }
+
+    @Override
+    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData, @Nullable NbtCompound entityNbt) {
+        EntityData data = super.initialize(world, difficulty, spawnReason, entityData, entityNbt);
+        this.rememberHomePos();
+        return data;
+    }
+
+    public void rememberHomePos() {
+        this.brain.remember(MemoryModuleType.HOME, GlobalPos.create(this.getWorld().getRegistryKey(), this.getBlockPos()));
+    }
+
+    public boolean outOfWanderRange() {
+        if (this.getWorld().isClient) return false;
+        GlobalPos pos = this.getHomePos();
+        int range = this.getBodyArmor().isEmpty() && !this.isBaby() ? 64 : 32;
+        return !this.getWorld().getRegistryKey().equals(pos.getDimension()) || this.getPos().distanceTo(Vec3d.ofCenter(pos.getPos())) > range * range;
+    }
+
+    public GlobalPos getHomePos() {
+        if (!this.brain.hasMemoryModule(MemoryModuleType.HOME)) this.rememberHomePos();
+        return Optional.ofNullable(this.getBrain().getOptionalMemory(MemoryModuleType.HOME)).map(o -> o.orElse(GlobalPos.create(World.OVERWORLD, BlockPos.ORIGIN))).orElse(GlobalPos.create(World.OVERWORLD, BlockPos.ORIGIN));
     }
 
     public void setBodyArmor(ItemStack stack) {
         this.equipStack(EquipmentSlot.CHEST, stack);
+        this.rememberHomePos();
     }
 
     public ItemStack getBodyArmor() {
