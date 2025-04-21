@@ -76,7 +76,7 @@ public class HappyGhastEntity extends AnimalEntity {
 
     @Override
     public @Nullable PassiveEntity createChild(ServerWorld world, PassiveEntity entity) {
-        return generateChild(world, entity.getBlockPos(), SpawnReason.BREEDING);
+        return generateChild(world, entity.getBlockPos(), SpawnReason.BREEDING, 0);
     }
 
     @Override
@@ -217,19 +217,25 @@ public class HappyGhastEntity extends AnimalEntity {
 
     @Override
     public ActionResult interactMob(PlayerEntity player, Hand hand) {
-        ItemStack stack = player.getMainHandStack();
+        ItemStack stack = player.getStackInHand(hand);
         if (!this.isBaby() && !this.hasPassengers())
             if (this.getBodyArmor().isEmpty()) {
                 if (stack.getItem() instanceof HarnessItem) {
-                    this.setBodyArmor(stack.copyWithCount(1));
-                    stack.decrement(1);
+                    if (!this.getWorld().isClient) {
+                        this.setBodyArmor(stack.copyWithCount(1));
+                        if (!player.getAbilities().creativeMode)
+                            stack.decrement(1);
+                    }
                     this.getWorld().playSoundFromEntity(null, this, HGSounds.ENTITY_HAPPY_GHAST_EQUIP.get(), SoundCategory.NEUTRAL, 1, 1);
                     return ActionResult.SUCCESS;
                 }
             } else if (stack.isOf(Items.SHEARS) && (EnchantmentHelper.getLevel(Enchantments.BINDING_CURSE, this.getBodyArmor()) == 0 || player.isCreative())) {
-                player.getInventory().offerOrDrop(this.getBodyArmor());
-                stack.damage(1, player, e -> e.sendEquipmentBreakStatus(EquipmentSlot.MAINHAND));
-                this.setBodyArmor(null);
+                if (!this.getWorld().isClient) {
+                    if (!player.getAbilities().creativeMode)
+                        player.getInventory().offerOrDrop(this.getBodyArmor());
+                    stack.damage(1, player, e -> e.sendEquipmentBreakStatus(hand == Hand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND));
+                    this.setBodyArmor(ItemStack.EMPTY);
+                }
                 this.getWorld().playSoundFromEntity(null, this, HGSounds.ENTITY_HAPPY_GHAST_UNEQUIP.get(), SoundCategory.NEUTRAL, 1, 1);
                 return ActionResult.SUCCESS;
             }
@@ -370,11 +376,11 @@ public class HappyGhastEntity extends AnimalEntity {
         return this.getEquippedStack(EquipmentSlot.CHEST);
     }
 
-    public static HappyGhastEntity generateChild(ServerWorld world, BlockPos pos, SpawnReason reason) {
+    public static HappyGhastEntity generateChild(ServerWorld world, BlockPos pos, SpawnReason reason, float yaw) {
         HappyGhastEntity ghast = new HappyGhastEntity(HGEntities.HAPPY_GHAST.get(), world);
-        ghast.refreshPositionAndAngles(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 0, 0);
+        ghast.refreshPositionAndAngles(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, yaw, 0);
         ghast.setBaby(true);
-        ghast.setHeadYaw(0);
+        ghast.setHeadYaw(yaw);
         ghast.setVelocity(0, 0, 0);
         ghast.initialize(world, world.getLocalDifficulty(pos), reason, null, null);
         return ghast;

@@ -3,7 +3,6 @@ package com.iafenvoy.ghast.item;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DyeColor;
-import net.minecraft.util.Rarity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,10 +25,6 @@ public class HarnessItem extends Item {
 
     public DyeColor getColor() {
         return this.color;
-    }
-
-    public static HarnessItem byColor(DyeColor color) {
-        return BY_COLOR.get(color);
     }
 
     public static Stream<HarnessItem> getAll() {

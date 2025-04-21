@@ -8,7 +8,8 @@
     "ClientPlayerEntityMixin"
   ],
   "mixins": [
-    "LivingEntityAccessor"
+    "LivingEntityAccessor",
+    "NetherFossilGenerator$PieceMixin"
   ],
   "injectors": {
     "defaultRequire": 1

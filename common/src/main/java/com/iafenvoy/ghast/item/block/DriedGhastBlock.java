@@ -66,7 +66,7 @@ public class DriedGhastBlock extends HorizontalFacingBlock implements Waterlogga
 
     @Override
     public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-        if (state.get(WATERLOGGED)) this.tickHydration(state, world, pos, random);
+        if (state.get(WATERLOGGED)) this.tickHydration(state, world, pos);
         else {
             int i = this.getHydration(state);
             if (i > 0)
@@ -74,7 +74,7 @@ public class DriedGhastBlock extends HorizontalFacingBlock implements Waterlogga
         }
     }
 
-    private void tickHydration(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+    private void tickHydration(BlockState state, ServerWorld world, BlockPos pos) {
         if (!this.isFullyHydrated(state)) {
             world.playSound(null, pos, HGSounds.BLOCK_DRIED_GHAST_TRANSITION.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
             world.setBlockState(pos, state.with(HYDRATION, this.getHydration(state) + 1), Block.NOTIFY_LISTENERS);
@@ -85,7 +85,7 @@ public class DriedGhastBlock extends HorizontalFacingBlock implements Waterlogga
 
     private void spawnGhastling(ServerWorld world, BlockPos pos, BlockState state) {
         world.removeBlock(pos, false);
-        HappyGhastEntity ghast = HappyGhastEntity.generateChild(world, pos, SpawnReason.BREEDING);
+        HappyGhastEntity ghast = HappyGhastEntity.generateChild(world, pos, SpawnReason.BREEDING, state.get(FACING).asRotation());
         world.spawnEntity(ghast);
         world.playSoundFromEntity(null, ghast, HGSounds.ENTITY_GHASTLING_SPAWN.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
     }
@@ -99,7 +99,7 @@ public class DriedGhastBlock extends HorizontalFacingBlock implements Waterlogga
             if (random.nextInt(40) == 0)
                 world.playSound(d, e, f, HGSounds.BLOCK_DRIED_GHAST_AMBIENT.get(), SoundCategory.AMBIENT, 1.0F, 1.0F, false);
             if (random.nextInt(6) == 0)
-                world.addParticle(ParticleTypes.SMOKE, d, e, f, 0.0, 0.02, 0.0);
+                world.addParticle(ParticleTypes.CLOUD, d, e, f, 0.0, 0.02, 0.0);
         } else {
             if (random.nextInt(40) == 0)
                 world.playSound(d, e, f, HGSounds.BLOCK_DRIED_GHAST_AMBIENT_WATER.get(), SoundCategory.AMBIENT, 1.0F, 1.0F, false);

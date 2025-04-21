@@ -1,6 +1,6 @@
 modLoader = "javafml"
 loaderVersion = "[47,)"
-#issueTrackerURL = ""
+issueTrackerURL = "https://github.com/IAFEnvoy/HappyGhastLegacy/issues"
 license = "All Right Reserved"
 
 [[mods]]

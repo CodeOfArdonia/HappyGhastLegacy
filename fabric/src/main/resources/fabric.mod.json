@@ -8,8 +8,7 @@
     "IAFEnvoy"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "sources": "https://github.com/IAFEnvoy/HappyGhastLegacy"
   },
   "license": "All Right Reserved",
   "icon": "assets/happy_ghast_legacy/icon.png",

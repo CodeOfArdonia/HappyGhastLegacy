@@ -14,6 +14,7 @@ import net.minecraft.util.DyeColor;
 
 import java.util.function.Supplier;
 
+@SuppressWarnings("unused")
 public final class HGItems {
     public static final DeferredRegister<Item> REGISTRY = DeferredRegister.create(HappyGhastLegacy.MOD_ID, RegistryKeys.ITEM);
 

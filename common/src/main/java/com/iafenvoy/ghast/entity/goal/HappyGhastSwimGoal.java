@@ -13,6 +13,6 @@ public class HappyGhastSwimGoal extends SwimGoal {
 
     @Override
     public boolean canStart() {
-        return !happyGhast.hasPlayerOnTop() && super.canStart();
+        return !this.happyGhast.hasPlayerOnTop() && super.canStart();
     }
 }

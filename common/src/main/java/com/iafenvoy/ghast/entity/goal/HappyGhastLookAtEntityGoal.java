@@ -15,6 +15,6 @@ public class HappyGhastLookAtEntityGoal extends LookAtEntityGoal {
     @Override
     public boolean canStart() {
         if (!super.canStart()) return false;
-        return !happyGhast.getBodyArmor().isEmpty();
+        return !this.happyGhast.getBodyArmor().isEmpty();
     }
 }
