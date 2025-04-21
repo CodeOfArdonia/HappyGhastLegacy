@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "happy_ghast_legacy",
+  "version": "${version}",
+  "name": "Happy Ghast Legacy",
+  "description": "Happy Ghast backport from 25w15a",
+  "authors": [
+    "IAFEnvoy"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+  "license": "All Right Reserved",
+  "icon": "assets/happy_ghast_legacy/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.iafenvoy.ghast.fabric.HappyGhastLegacyFabric"
+    ],
+    "client": [
+      "com.iafenvoy.ghast.fabric.client.HappyGhastLegacyFabricClient"
+    ]
+  },
+  "mixins": [
+    "happy_ghast_legacy.mixins.json"
+  ],
+  "depends": {
+    "minecraft": "~1.20.1",
+    "architectury": ">=9.2.14",
+    "fabric-api": "*"
+  }
+}

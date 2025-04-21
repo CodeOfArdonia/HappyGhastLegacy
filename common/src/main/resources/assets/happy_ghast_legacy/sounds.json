@@ -1,0 +1,190 @@
+{
+  "block.dried_ghast.ambient": {
+    "sounds": [
+      "happy_ghast_legacy:block/dried_ghast/ambient1",
+      "happy_ghast_legacy:block/dried_ghast/ambient2"
+    ],
+    "subtitle": "subtitles.block.dried_ghast.ambient"
+  },
+  "block.dried_ghast.ambient_water": {
+    "sounds": [
+      "happy_ghast_legacy:block/dried_ghast/ambient_water1",
+      "happy_ghast_legacy:block/dried_ghast/ambient_water2"
+    ],
+    "subtitle": "subtitles.block.dried_ghast.ambient_water"
+  },
+  "block.dried_ghast.break": {
+    "sounds": [
+      "happy_ghast_legacy:block/dried_ghast/break"
+    ],
+    "subtitle": "subtitles.block.generic.break"
+  },
+  "block.dried_ghast.fall": {
+    "sounds": [
+      "step/wood1",
+      "step/wood2",
+      "step/wood3",
+      "step/wood4",
+      "step/wood5",
+      "step/wood6"
+    ],
+    "subtitle": "subtitles.block.generic.fall"
+  },
+  "block.dried_ghast.hit": {
+    "sounds": [
+      "happy_ghast_legacy:block/dried_ghast/hit1",
+      "happy_ghast_legacy:block/dried_ghast/hit2",
+      "happy_ghast_legacy:block/dried_ghast/hit3"
+    ],
+    "subtitle": "subtitles.block.generic.hit"
+  },
+  "block.dried_ghast.place": {
+    "sounds": [
+      "happy_ghast_legacy:block/dried_ghast/wood1",
+      "happy_ghast_legacy:block/dried_ghast/wood2",
+      "happy_ghast_legacy:block/dried_ghast/wood3",
+      "happy_ghast_legacy:block/dried_ghast/wood4"
+    ],
+    "subtitle": "subtitles.block.generic.place"
+  },
+  "block.dried_ghast.place_in_water": {
+    "sounds": [
+      "happy_ghast_legacy:block/dried_ghast/placeinwater"
+    ],
+    "subtitle": "subtitles.block.dried_ghast.place_in_water"
+  },
+  "block.dried_ghast.step": {
+    "sounds": [
+      "happy_ghast_legacy:block/dried_ghast/step/wood1",
+      "happy_ghast_legacy:block/dried_ghast/step/wood2",
+      "happy_ghast_legacy:block/dried_ghast/step/wood3",
+      "happy_ghast_legacy:block/dried_ghast/step/wood4",
+      "happy_ghast_legacy:block/dried_ghast/step/wood5",
+      "happy_ghast_legacy:block/dried_ghast/step/wood6"
+    ],
+    "subtitle": "subtitles.block.generic.footsteps"
+  },
+  "block.dried_ghast.transition": {
+    "sounds": [
+      "happy_ghast_legacy:block/dried_ghast/transition"
+    ],
+    "subtitle": "subtitles.block.dried_ghast.transition"
+  },
+  "entity.ghastling.ambient": {
+    "sounds": [
+      "happy_ghast_legacy:mob/ghastling/ghastling1",
+      "happy_ghast_legacy:mob/ghastling/ghastling2",
+      "happy_ghast_legacy:mob/ghastling/ghastling3",
+      "happy_ghast_legacy:mob/ghastling/ghastling4",
+      "happy_ghast_legacy:mob/ghastling/ghastling5",
+      "happy_ghast_legacy:mob/ghastling/ghastling6",
+      "happy_ghast_legacy:mob/ghastling/ghastling7"
+    ],
+    "subtitle": "subtitles.entity.ghastling.ambient"
+  },
+  "entity.ghastling.death": {
+    "sounds": [
+      "happy_ghast_legacy:mob/ghastling/death"
+    ],
+    "subtitle": "subtitles.entity.ghastling.death"
+  },
+  "entity.ghastling.hurt": {
+    "sounds": [
+      "happy_ghast_legacy:mob/ghastling/hurt1",
+      "happy_ghast_legacy:mob/ghastling/hurt2",
+      "happy_ghast_legacy:mob/ghastling/hurt3",
+      "happy_ghast_legacy:mob/ghastling/hurt4",
+      "happy_ghast_legacy:mob/ghastling/hurt5"
+    ],
+    "subtitle": "subtitles.entity.ghastling.hurt"
+  },
+  "entity.ghastling.spawn": {
+    "sounds": [
+      "happy_ghast_legacy:mob/ghastling/spawn"
+    ],
+    "subtitle": "subtitles.entity.ghastling.spawn"
+  },
+  "entity.happy_ghast.ambient": {
+    "sounds": [
+      "happy_ghast_legacy:mob/happy_ghast/ambient1",
+      {
+        "name": "happy_ghast_legacy:mob/happy_ghast/ambient2",
+        "weight": 3
+      },
+      {
+        "name": "happy_ghast_legacy:mob/happy_ghast/ambient3",
+        "weight": 2
+      },
+      "happy_ghast_legacy:mob/happy_ghast/ambient4",
+      {
+        "name": "happy_ghast_legacy:mob/happy_ghast/ambient5",
+        "weight": 2
+      },
+      "happy_ghast_legacy:mob/happy_ghast/ambient6",
+      {
+        "name": "happy_ghast_legacy:mob/happy_ghast/ambient7",
+        "weight": 2
+      },
+      "happy_ghast_legacy:mob/happy_ghast/ambient8",
+      "happy_ghast_legacy:mob/happy_ghast/ambient9",
+      "happy_ghast_legacy:mob/happy_ghast/ambient10",
+      "happy_ghast_legacy:mob/happy_ghast/ambient11",
+      {
+        "name": "happy_ghast_legacy:mob/happy_ghast/ambient12",
+        "weight": 2
+      },
+      {
+        "name": "happy_ghast_legacy:mob/happy_ghast/ambient13",
+        "weight": 2
+      },
+      "happy_ghast_legacy:mob/happy_ghast/ambient14"
+    ],
+    "subtitle": "subtitles.entity.happy_ghast.ambient"
+  },
+  "entity.happy_ghast.death": {
+    "sounds": [
+      "happy_ghast_legacy:mob/happy_ghast/death"
+    ],
+    "subtitle": "subtitles.entity.happy_ghast.death"
+  },
+  "entity.happy_ghast.equip": {
+    "sounds": [
+      "happy_ghast_legacy:mob/happy_ghast/harness_equip"
+    ],
+    "subtitle": "subtitles.entity.happy_ghast.equip"
+  },
+  "entity.happy_ghast.harness_goggles_down": {
+    "sounds": [
+      "happy_ghast_legacy:mob/happy_ghast/goggles_down"
+    ],
+    "subtitle": "subtitles.entity.happy_ghast.harness_goggles_down"
+  },
+  "entity.happy_ghast.harness_goggles_up": {
+    "sounds": [
+      "happy_ghast_legacy:mob/happy_ghast/goggles_up"
+    ],
+    "subtitle": "subtitles.entity.happy_ghast.harness_goggles_up"
+  },
+  "entity.happy_ghast.hurt": {
+    "sounds": [
+      "happy_ghast_legacy:mob/happy_ghast/hurt1",
+      "happy_ghast_legacy:mob/happy_ghast/hurt2",
+      "happy_ghast_legacy:mob/happy_ghast/hurt3",
+      "happy_ghast_legacy:mob/happy_ghast/hurt4",
+      "happy_ghast_legacy:mob/happy_ghast/hurt5",
+      "happy_ghast_legacy:mob/happy_ghast/hurt6"
+    ],
+    "subtitle": "subtitles.entity.happy_ghast.hurt"
+  },
+  "entity.happy_ghast.riding": {
+    "sounds": [
+      "happy_ghast_legacy:mob/happy_ghast/ghast_ride"
+    ]
+  },
+  "entity.happy_ghast.unequip": {
+    "sounds": [
+      "happy_ghast_legacy:mob/happy_ghast/harness_unequip"
+    ],
+    "subtitle": "subtitles.entity.happy_ghast.unequip"
+  }
+}

@@ -1,0 +1,35 @@
+modLoader = "javafml"
+loaderVersion = "[47,)"
+#issueTrackerURL = ""
+license = "All Right Reserved"
+
+[[mods]]
+modId = "happy_ghast_legacy"
+version = "${version}"
+displayName = "Happy Ghast Legacy"
+authors = "IAFEnvoy"
+description = '''
+Happy Ghast backport from 25w15a
+'''
+#logoFile = ""
+
+[[dependencies.happy_ghast_legacy]]
+modId = "forge"
+mandatory = true
+versionRange = "[47,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.happy_ghast_legacy]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.20.1,1.20.5)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.happy_ghast_legacy]]
+modId = "architectury"
+mandatory = true
+versionRange = "[9.2.14,)"
+ordering = "AFTER"
+side = "BOTH"

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "happy_ghast_legacy:dried_ghast"
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "random_sequence": "happy_ghast_legacy:blocks/dried_ghast"
+}

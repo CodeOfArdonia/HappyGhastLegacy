@@ -1,0 +1,13 @@
+{
+  "parent": "happy_ghast_legacy:block/dried_ghast",
+  "textures": {
+    "bottom": "happy_ghast_legacy:block/dried_ghast_hydration_1_bottom",
+    "east": "happy_ghast_legacy:block/dried_ghast_hydration_1_east",
+    "north": "happy_ghast_legacy:block/dried_ghast_hydration_1_north",
+    "particle": "happy_ghast_legacy:block/dried_ghast_hydration_1_north",
+    "south": "happy_ghast_legacy:block/dried_ghast_hydration_1_south",
+    "tentacles": "happy_ghast_legacy:block/dried_ghast_hydration_1_tentacles",
+    "top": "happy_ghast_legacy:block/dried_ghast_hydration_1_top",
+    "west": "happy_ghast_legacy:block/dried_ghast_hydration_1_west"
+  }
+}
