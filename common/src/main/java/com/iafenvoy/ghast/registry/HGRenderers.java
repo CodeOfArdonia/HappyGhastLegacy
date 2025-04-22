@@ -10,11 +10,11 @@ import net.minecraft.client.render.RenderLayer;
 
 @Environment(EnvType.CLIENT)
 public final class HGRenderers {
-    public static void registerRenderLayers() {
-        RenderTypeRegistry.register(RenderLayer.getCutout(), HGBlocks.DRIED_GHAST.get());
-    }
-
     public static void registerEntityRenderers() {
         EntityRendererRegistry.register(HGEntities.HAPPY_GHAST, HappyGhastRenderer::new);
+    }
+
+    public static void registerRenderLayers() {
+        RenderTypeRegistry.register(RenderLayer.getCutout(), HGBlocks.DRIED_GHAST.get());
     }
 }

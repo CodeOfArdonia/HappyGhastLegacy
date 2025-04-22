@@ -11,7 +11,7 @@ authors = "IAFEnvoy"
 description = '''
 Happy Ghast backport from 25w15a
 '''
-#logoFile = ""
+logoFile = "logo.png"
 
 [[dependencies.happy_ghast_legacy]]
 modId = "forge"

@@ -6,6 +6,7 @@ import net.fabricmc.api.ClientModInitializer;
 public final class HappyGhastLegacyFabricClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
+        HappyGhastLegacyClient.init();
         HappyGhastLegacyClient.process();
     }
 }

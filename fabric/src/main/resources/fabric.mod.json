@@ -11,7 +11,7 @@
     "sources": "https://github.com/IAFEnvoy/HappyGhastLegacy"
   },
   "license": "All Right Reserved",
-  "icon": "assets/happy_ghast_legacy/icon.png",
+  "icon": "logo.png",
   "environment": "*",
   "entrypoints": {
     "main": [
