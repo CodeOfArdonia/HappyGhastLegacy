@@ -39,7 +39,10 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.GlobalPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
@@ -172,24 +175,6 @@ public class HappyGhastEntity extends AnimalEntity {
     }
 
     @Override
-    protected Vec3d getControlledMovementInput(PlayerEntity controllingPlayer, Vec3d movementInput) {
-        float f = controllingPlayer.sidewaysSpeed;
-        float g = 0.0F;
-        float h = 0.0F;
-        if (controllingPlayer.forwardSpeed != 0.0F) {
-            float i = MathHelper.cos(controllingPlayer.getPitch() * (float) (Math.PI / 180.0));
-            float j = -MathHelper.sin(controllingPlayer.getPitch() * (float) (Math.PI / 180.0));
-            if (controllingPlayer.forwardSpeed < 0.0F) {
-                i *= -0.5F;
-                j *= -0.5F;
-            }
-            h = j;
-            g = i;
-        }
-        return new Vec3d(f, h, g).multiply(0.18F);
-    }
-
-    @Override
     public void updatePassengerPosition(Entity passenger, PositionUpdater positionUpdater) {
         if (this.hasPassenger(passenger)) {
             Vec3d offset = switch (this.getPassengerList().indexOf(passenger)) {
@@ -316,7 +301,7 @@ public class HappyGhastEntity extends AnimalEntity {
                 float forward = passenger.forwardSpeed;
                 double y = entity.getRotationVector().y * forward * 0.75D;
                 if (((LivingEntityAccessor) passenger).isJumping()) y += 0.5F;
-                super.travel(new Vec3d(0.0D, y, forward * 1.65D * (1.0D - Math.abs(entity.getRotationVector().y))));
+                super.travel(new Vec3d(passenger.sidewaysSpeed * this.getMovementSpeed(), y, forward * 1.65D * (1.0D - Math.abs(entity.getRotationVector().y))));
             }
             double d1 = this.getX() - this.prevX;
             double d0 = this.getZ() - this.prevZ;
@@ -433,7 +418,7 @@ public class HappyGhastEntity extends AnimalEntity {
 
     public static DefaultAttributeContainer.Builder createAttributes() {
         return MobEntity.createMobAttributes()
-                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.15D)
+                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.18D)
                 .add(EntityAttributes.GENERIC_MAX_HEALTH, 40.0D)
                 .add(EntityAttributes.GENERIC_ARMOR, 0.0D)
                 .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.0D)
