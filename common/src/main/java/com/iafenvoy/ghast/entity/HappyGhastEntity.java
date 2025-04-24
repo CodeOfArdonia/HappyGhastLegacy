@@ -8,7 +8,6 @@ import com.iafenvoy.ghast.registry.HGEntities;
 import com.iafenvoy.ghast.registry.HGSounds;
 import com.iafenvoy.ghast.registry.HGTags;
 import com.mojang.serialization.Dynamic;
-import it.unimi.dsi.fastutil.floats.FloatFloatImmutablePair;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
@@ -39,24 +38,18 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.GlobalPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.LinkedList;
 import java.util.Optional;
-import java.util.Queue;
 import java.util.Set;
 
 public class HappyGhastEntity extends AnimalEntity {
     private static final double STANDARD_RIDER_OFFSET = 1.35;
-    private static final int ROTATION_DELAY_TICKS = 20;
-    private final Queue<FloatFloatImmutablePair> rotationCache = new LinkedList<>();
+    private long currentAge = 0;
 
     public HappyGhastEntity(EntityType<HappyGhastEntity> type, World world) {
         super(type, world);
@@ -66,6 +59,18 @@ public class HappyGhastEntity extends AnimalEntity {
         this.setPersistent();
         this.moveControl = new FlightMoveControl(this, 10, true);
         this.setEquipmentDropChance(EquipmentSlot.CHEST, 1);
+    }
+
+    @Override
+    public void writeCustomDataToNbt(NbtCompound nbt) {
+        super.writeCustomDataToNbt(nbt);
+        nbt.putLong("currentAge", this.currentAge);
+    }
+
+    @Override
+    public void readCustomDataFromNbt(NbtCompound nbt) {
+        super.readCustomDataFromNbt(nbt);
+        this.currentAge = nbt.getLong("currentAge");
     }
 
     @Override
@@ -285,35 +290,67 @@ public class HappyGhastEntity extends AnimalEntity {
 
     @Override
     public void travel(Vec3d movementInput) {
-        Entity entity = this.getPassengerList().isEmpty() ? null : this.getPassengerList().get(0);
-        if (entity != null) {
-            this.rotationCache.add(new FloatFloatImmutablePair(entity.getPitch(), entity.getYaw()));
-            if (!this.rotationCache.isEmpty() && this.rotationCache.size() > ROTATION_DELAY_TICKS) {
-                FloatFloatImmutablePair pair = this.rotationCache.poll();
-                this.setYaw(pair.rightFloat());
-                this.prevYaw = this.getYaw();
-                this.setPitch(pair.leftFloat() * 0.5F);
-                this.setRotation(this.getYaw(), this.getPitch());
-                this.headYaw = this.bodyYaw = pair.rightFloat();
+        this.travelFlying(movementInput, 0.09F, 0.09F, 0.09F);
+    }
+
+    protected void travelFlying(Vec3d movementInput, float inWaterSpeed, float inLavaSpeed, float regularSpeed) {
+        if (this.isTouchingWater()) {
+            this.updateVelocity(inWaterSpeed, movementInput);
+            this.move(MovementType.SELF, this.getVelocity());
+            this.setVelocity(this.getVelocity().multiply(0.8F));
+        } else if (this.isInLava()) {
+            this.updateVelocity(inLavaSpeed, movementInput);
+            this.move(MovementType.SELF, this.getVelocity());
+            this.setVelocity(this.getVelocity().multiply(0.5));
+        } else {
+            this.updateVelocity(regularSpeed, movementInput);
+            this.move(MovementType.SELF, this.getVelocity());
+            this.setVelocity(this.getVelocity().multiply(0.91F));
+        }
+    }
+
+    @Override
+    protected Vec3d getControlledMovementInput(PlayerEntity controllingPlayer, Vec3d movementInput) {
+        float f = controllingPlayer.sidewaysSpeed;
+        float g = 0.0F;
+        float h = 0.0F;
+        if (controllingPlayer.forwardSpeed != 0.0F) {
+            float i = MathHelper.cos(controllingPlayer.getPitch() * (float) (Math.PI / 180.0));
+            float j = -MathHelper.sin(controllingPlayer.getPitch() * (float) (Math.PI / 180.0));
+            if (controllingPlayer.forwardSpeed < 0.0F) {
+                i *= -0.5F;
+                j *= -0.5F;
             }
-            if (entity instanceof LivingEntity passenger) {
-                this.setMovementSpeed((float) this.getAttributeValue(EntityAttributes.GENERIC_FLYING_SPEED));
-                float forward = passenger.forwardSpeed;
-                double y = entity.getRotationVector().y * forward * 0.75D;
-                if (((LivingEntityAccessor) passenger).isJumping()) y += 0.5F;
-                super.travel(new Vec3d(passenger.sidewaysSpeed * this.getMovementSpeed(), y, forward * 1.65D * (1.0D - Math.abs(entity.getRotationVector().y))));
-            }
-            double d1 = this.getX() - this.prevX;
-            double d0 = this.getZ() - this.prevZ;
-            float f1 = (float) Math.min(Math.sqrt(d1 * d1 + d0 * d0) * 4.0F, 1);
-            this.limbAnimator.setSpeed(this.limbAnimator.getSpeed() + (f1 - this.limbAnimator.getSpeed()) * 0.4F);
-            this.limbAnimator.getPos(this.limbAnimator.getPos() + this.limbAnimator.getSpeed());
-            this.updateLimbs(true);
-        } else super.travel(movementInput);
+            h = j;
+            g = i;
+        }
+        if (((LivingEntityAccessor) controllingPlayer).isJumping())
+            h += 0.5F;
+        return new Vec3d(f, h, g).multiply(0.18F);
+    }
+
+    protected Vec2f getGhastRotation(LivingEntity controllingEntity) {
+        return new Vec2f(controllingEntity.getPitch() * 0.5F, controllingEntity.getYaw());
+    }
+
+    @Override
+    protected void tickControlled(PlayerEntity controllingPlayer, Vec3d movementInput) {
+        super.tickControlled(controllingPlayer, movementInput);
+        Vec2f vec2f = this.getGhastRotation(controllingPlayer);
+        float f = this.getYaw();
+        float g = MathHelper.wrapDegrees(vec2f.y - f);
+        f += g * 0.08F;
+        this.setRotation(f, vec2f.x);
+        this.prevYaw = this.bodyYaw = this.headYaw = f;
     }
 
     @Override
     protected void fall(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
+    }
+
+    @Override
+    public boolean isClimbing() {
+        return false;
     }
 
     @Override
@@ -362,15 +399,24 @@ public class HappyGhastEntity extends AnimalEntity {
     }
 
     @Override
+    public void tick() {
+        super.tick();
+        this.currentAge++;
+        if (this.currentAge % 600 == 0 || this.currentAge % 20 == 0 && (192 <= this.getY() && this.getY() <= 196 || this.getWorld().hasRain(this.getBlockPos())))
+            this.heal(1);
+        EntityAttributeInstance kbResist = this.getAttributeInstance(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE);
+        if (kbResist != null) {
+            double newValue = this.hasPlayerOnTop() ? 1 : this.getPassengerList().size() * 0.05;
+            if (newValue != kbResist.getValue())
+                kbResist.setBaseValue(newValue);
+        }
+    }
+
+    @Override
     public void tickMovement() {
         super.tickMovement();
         this.setNoGravity(true);
         if (this.isTouchingWater()) this.removeAllPassengers();
-        if (this.age % 600 == 0 || this.age % 20 == 0 && 192 <= this.getY() && this.getY() <= 196)
-            this.heal(1);
-        EntityAttributeInstance kbResist = this.getAttributeInstance(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE);
-        if (kbResist != null)
-            kbResist.setBaseValue(this.hasPlayerOnTop() ? 1 : this.getPassengerList().size() * 0.05);
         if (this.outOfWanderRange()) this.rememberHomePos();
     }
 

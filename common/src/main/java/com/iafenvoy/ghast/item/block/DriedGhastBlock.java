@@ -12,6 +12,7 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -95,16 +96,16 @@ public class DriedGhastBlock extends HorizontalFacingBlock implements Waterlogga
         double d = pos.getX() + 0.5;
         double e = pos.getY() + 0.5;
         double f = pos.getZ() + 0.5;
-        if (!(Boolean) state.get(WATERLOGGED)) {
-            if (random.nextInt(40) == 0)
-                world.playSound(d, e, f, HGSounds.BLOCK_DRIED_GHAST_AMBIENT.get(), SoundCategory.AMBIENT, 1.0F, 1.0F, false);
-            if (random.nextInt(6) == 0)
-                world.addParticle(ParticleTypes.CLOUD, d, e, f, 0.0, 0.02, 0.0);
-        } else {
+        if (state.get(WATERLOGGED)) {
             if (random.nextInt(40) == 0)
                 world.playSound(d, e, f, HGSounds.BLOCK_DRIED_GHAST_AMBIENT_WATER.get(), SoundCategory.AMBIENT, 1.0F, 1.0F, false);
             if (random.nextInt(6) == 0)
                 world.addParticle(ParticleTypes.HAPPY_VILLAGER, d + (random.nextFloat() * 2.0F - 1.0F) / 3.0F, e + 0.4, f + (random.nextFloat() * 2.0F - 1.0F) / 3.0F, 0.0, random.nextFloat(), 0.0);
+        } else if (world.getBlockState(pos.down()).isIn(BlockTags.SOUL_SPEED_BLOCKS)) {
+            if (random.nextInt(40) == 0)
+                world.playSound(d, e, f, HGSounds.BLOCK_DRIED_GHAST_AMBIENT.get(), SoundCategory.AMBIENT, 1.0F, 1.0F, false);
+            if (random.nextInt(6) == 0)
+                world.addParticle(ParticleTypes.CLOUD, d, e, f, 0.0, 0.02, 0.0);
         }
     }
 
