@@ -30,7 +30,7 @@ class HarnessFeatureRenderer extends FeatureRenderer<HappyGhastEntity, GhastEnti
             matrices.scale(1.05F, 1.05F, 1.05F);
             matrices.translate(0.0F, 0.05F, 0.0F);
             model.setAngles(entity, limbAngle, limbDistance, animationProgress, headYaw, headPitch);
-            model.render(matrices, vertexConsumer, light, LivingEntityRenderer.getOverlay(entity, 0), 1, 1, 1, 1);
+            model.render(matrices, vertexConsumer, light, LivingEntityRenderer.getOverlay(entity, 0), -1);
             matrices.pop();
         }
     }

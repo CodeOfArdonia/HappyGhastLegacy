@@ -1,5 +1,6 @@
 package com.iafenvoy.ghast.item;
 
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DyeColor;
@@ -19,7 +20,7 @@ public class HarnessItem extends Item {
     }
 
     @Override
-    public int getMaxUseTime(ItemStack itemstack) {
+    public int getMaxUseTime(ItemStack stack, LivingEntity user) {
         return 0;
     }
 
