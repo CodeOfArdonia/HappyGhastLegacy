@@ -21,6 +21,7 @@ public class HappyGhastRenderer extends MobEntityRenderer<HappyGhastEntity, Ghas
     public HappyGhastRenderer(EntityRendererFactory.Context ctx) {
         super(ctx, new GhastEntityModel<>(ctx.getPart(EntityModelLayers.GHAST)), 0.9F);
         this.addFeature(new HarnessFeatureRenderer(this));
+        this.addFeature(new HappyGhastRopesFeatureRenderer(this));
     }
 
     @Override

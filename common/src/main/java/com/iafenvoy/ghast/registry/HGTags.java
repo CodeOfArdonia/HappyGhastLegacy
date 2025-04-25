@@ -8,4 +8,5 @@ import net.minecraft.util.Identifier;
 
 public final class HGTags {
     public static final TagKey<Item> HAPPY_GHAST_FOOD = TagKey.of(RegistryKeys.ITEM, Identifier.of(HappyGhastLegacy.MOD_ID, "happy_ghast_food"));
+    public static final TagKey<Item> HARNESS = TagKey.of(RegistryKeys.ITEM, Identifier.of(HappyGhastLegacy.MOD_ID, "harness"));
 }
