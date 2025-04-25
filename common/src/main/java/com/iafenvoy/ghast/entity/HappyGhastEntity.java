@@ -32,7 +32,6 @@ import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.thrown.PotionEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
@@ -197,36 +196,21 @@ public class HappyGhastEntity extends AnimalEntity {
     @Override
     public void updatePassengerPosition(Entity passenger, PositionUpdater positionUpdater) {
         if (this.hasPassenger(passenger)) {
-            Vec3d offset = switch (this.getPassengerList().indexOf(passenger)) {
-                case 0 ->
-                        new Vec3d(STANDARD_RIDER_OFFSET, this.getMountedHeightOffset(), 0).rotateY(-this.getYaw() * 0.017453292F - 1.5707964F);
-                case 1 ->
-                        new Vec3d(0, this.getMountedHeightOffset(), -STANDARD_RIDER_OFFSET).rotateY(-this.getYaw() * 0.017453292F - 1.5707964F);
-                case 2 ->
-                        new Vec3d(-STANDARD_RIDER_OFFSET, this.getMountedHeightOffset(), 0).rotateY(-this.getYaw() * 0.017453292F - 1.5707964F);
-                case 3 ->
-                        new Vec3d(0, this.getMountedHeightOffset(), STANDARD_RIDER_OFFSET).rotateY(-this.getYaw() * 0.017453292F - 1.5707964F);
+            Vec3d offset = (switch (this.getPassengerList().indexOf(passenger)) {
+                case 0 -> new Vec3d(STANDARD_RIDER_OFFSET, this.getMountedHeightOffset(), 0);
+                case 1 -> new Vec3d(0, this.getMountedHeightOffset(), -STANDARD_RIDER_OFFSET);
+                case 2 -> new Vec3d(-STANDARD_RIDER_OFFSET, this.getMountedHeightOffset(), 0);
+                case 3 -> new Vec3d(0, this.getMountedHeightOffset(), STANDARD_RIDER_OFFSET);
                 default -> Vec3d.ZERO;
-            };
+            }).rotateY((float) (-Math.toRadians(this.getYaw()) - Math.PI / 2));
             positionUpdater.accept(passenger, this.getX() + offset.x, this.getY() + offset.y, this.getZ() + offset.z);
         }
     }
 
     @Override
     public boolean isInvulnerableTo(DamageSource source) {
-        return source.getSource() instanceof PotionEntity ||
-                source.getSource() instanceof AreaEffectCloudEntity ||
-                source.isOf(DamageTypes.FALL) ||
-                source.isOf(DamageTypes.CACTUS) ||
+        return source.isOf(DamageTypes.FALL) ||
                 source.isOf(DamageTypes.DROWN) && this.isBaby() ||
-                source.isOf(DamageTypes.LIGHTNING_BOLT) ||
-                source.isOf(DamageTypes.EXPLOSION) ||
-                source.isOf(DamageTypes.PLAYER_EXPLOSION) ||
-                source.isOf(DamageTypes.TRIDENT) ||
-                source.isOf(DamageTypes.FALLING_ANVIL) ||
-                source.isOf(DamageTypes.DRAGON_BREATH) ||
-                source.isOf(DamageTypes.WITHER) ||
-                source.isOf(DamageTypes.WITHER_SKULL) ||
                 super.isInvulnerableTo(source);
     }
 
