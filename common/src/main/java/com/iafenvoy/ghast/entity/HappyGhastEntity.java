@@ -141,9 +141,8 @@ public class HappyGhastEntity extends AnimalEntity {
         return false;
     }
 
-    @Override
     public double getMountedHeightOffset() {
-        return super.getMountedHeightOffset() + 0.5D;
+        return (double) this.getDimensions(EntityPose.STANDING).height * 0.75 + 0.5D;
     }
 
     @Override
@@ -211,12 +210,9 @@ public class HappyGhastEntity extends AnimalEntity {
     public boolean isInvulnerableTo(DamageSource source) {
         return source.isOf(DamageTypes.FALL) ||
                 source.isOf(DamageTypes.DROWN) && this.isBaby() ||
+                source.isOf(DamageTypes.EXPLOSION) ||
+                source.isOf(DamageTypes.PLAYER_EXPLOSION) ||
                 super.isInvulnerableTo(source);
-    }
-
-    @Override
-    public boolean isImmuneToExplosion() {
-        return true;
     }
 
     @Override
@@ -280,7 +276,7 @@ public class HappyGhastEntity extends AnimalEntity {
 
     public boolean hasPlayerOnTop() {
         Box box = this.getBoundingBox();
-        Box box2 = new Box(box.minX - 1.0, box.maxY, box.minZ - 1.0, box.maxX + 1.0, box.maxY + box.getYLength() / 2.0, box.maxZ + 1.0);
+        Box box2 = new Box(box.minX - 1.0, box.maxY, box.minZ - 1.0, box.maxX + 1.0, box.maxY + box.getLengthY() / 2.0, box.maxZ + 1.0);
         for (PlayerEntity playerEntity : this.getWorld().getPlayers())
             if (!playerEntity.isSpectator() && box2.contains(playerEntity.getX(), playerEntity.getY(), playerEntity.getZ()))
                 return true;
@@ -349,11 +345,6 @@ public class HappyGhastEntity extends AnimalEntity {
     @Override
     public int getLimitPerChunk() {
         return 1;
-    }
-
-    @Override
-    public boolean canBreatheInWater() {
-        return this.isBaby() || super.canBreatheInWater();
     }
 
     @Override
