@@ -25,9 +25,6 @@ import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.PassiveEntity;
@@ -51,7 +48,6 @@ import java.util.Optional;
 import java.util.Set;
 
 public class HappyGhastEntity extends AnimalEntity {
-    private static final TrackedData<Boolean> HAS_ROPES = DataTracker.registerData(HappyGhastEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
     private static final double STANDARD_RIDER_OFFSET = 1.35;
     private long currentAge = 0;
 
@@ -67,23 +63,15 @@ public class HappyGhastEntity extends AnimalEntity {
     }
 
     @Override
-    protected void initDataTracker() {
-        super.initDataTracker();
-        this.dataTracker.startTracking(HAS_ROPES, false);
-    }
-
-    @Override
     public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
         nbt.putLong("currentAge", this.currentAge);
-        nbt.putBoolean("hasRopes", this.hasRopes());
     }
 
     @Override
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
         this.currentAge = nbt.getLong("currentAge");
-        this.setHasRopes(nbt.getBoolean("hasRopes"));
     }
 
     @Override
@@ -413,14 +401,6 @@ public class HappyGhastEntity extends AnimalEntity {
         EntityData data = super.initialize(world, difficulty, spawnReason, entityData, entityNbt);
         this.rememberHomePos();
         return data;
-    }
-
-    public boolean hasRopes() {
-        return this.dataTracker.get(HAS_ROPES);
-    }
-
-    public void setHasRopes(boolean hasRopes) {
-        this.dataTracker.set(HAS_ROPES, hasRopes);
     }
 
     public void rememberHomePos() {
