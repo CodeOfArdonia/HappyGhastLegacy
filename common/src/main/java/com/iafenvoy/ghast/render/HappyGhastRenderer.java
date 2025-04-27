@@ -2,10 +2,11 @@ package com.iafenvoy.ghast.render;
 
 import com.iafenvoy.ghast.HappyGhastLegacy;
 import com.iafenvoy.ghast.entity.HappyGhastEntity;
+import com.iafenvoy.ghast.registry.HGModelLayers;
+import com.iafenvoy.ghast.render.model.HappyGhastHarnessEntityModel;
 import dev.architectury.platform.Platform;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
-import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.entity.model.GhastEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
@@ -19,8 +20,8 @@ public class HappyGhastRenderer extends MobEntityRenderer<HappyGhastEntity, Ghas
     private static final Identifier KIKI_TEXTURE = Identifier.of(HappyGhastLegacy.MOD_ID, "textures/entity/kiki.png");
 
     public HappyGhastRenderer(EntityRendererFactory.Context ctx) {
-        super(ctx, new GhastEntityModel<>(ctx.getPart(EntityModelLayers.GHAST)), 0.9F);
-        this.addFeature(new HarnessFeatureRenderer(this));
+        super(ctx, new GhastEntityModel<>(ctx.getPart(HGModelLayers.HAPPY_GHAST)), 0.9F);
+        this.addFeature(new HarnessFeatureRenderer(this, new HappyGhastHarnessEntityModel(ctx.getPart(HGModelLayers.HAPPY_GHAST_HARNESS))));
         this.addFeature(new HappyGhastRopesFeatureRenderer(this));
     }
 

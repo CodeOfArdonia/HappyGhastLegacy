@@ -12,5 +12,6 @@ public final class HappyGhastLegacyClient {
 
     public static void process() {
         HGRenderers.registerRenderLayers();
+        HGRenderers.registerModelLayers();
     }
 }
