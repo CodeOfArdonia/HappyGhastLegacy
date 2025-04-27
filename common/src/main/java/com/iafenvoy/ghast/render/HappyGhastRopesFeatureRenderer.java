@@ -21,7 +21,7 @@ public class HappyGhastRopesFeatureRenderer extends FeatureRenderer<HappyGhastEn
 
     @Override
     public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, HappyGhastEntity entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
-        if (entity.getBodyArmor().isIn(HGTags.HARNESS) && entity.hasRopes())
+        if (entity.getBodyArmor().isIn(HGTags.HARNESS) && entity.isLeashed())
             this.getContextModel().render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityCutoutNoCull(ROPES_TEXTURE)), light, OverlayTexture.DEFAULT_UV, -1);
     }
 }

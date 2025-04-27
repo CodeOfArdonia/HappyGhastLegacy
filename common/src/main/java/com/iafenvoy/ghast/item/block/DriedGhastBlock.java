@@ -31,7 +31,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
-@SuppressWarnings("deprecation")
 public class DriedGhastBlock extends HorizontalFacingBlock implements Waterloggable {
     private static final MapCodec<DriedGhastBlock> CODEC = createCodec(settings -> new DriedGhastBlock());
     public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
