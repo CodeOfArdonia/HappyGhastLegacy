@@ -7,11 +7,11 @@ import net.fabricmc.api.Environment;
 @Environment(EnvType.CLIENT)
 public final class HappyGhastLegacyClient {
     public static void init() {
+        HGRenderers.registerModelLayers();
         HGRenderers.registerEntityRenderers();
     }
 
     public static void process() {
         HGRenderers.registerRenderLayers();
-        HGRenderers.registerModelLayers();
     }
 }
