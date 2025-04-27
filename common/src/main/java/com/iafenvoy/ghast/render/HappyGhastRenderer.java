@@ -7,7 +7,6 @@ import com.iafenvoy.ghast.render.model.HappyGhastHarnessEntityModel;
 import dev.architectury.platform.Platform;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
-import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.entity.model.GhastEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
