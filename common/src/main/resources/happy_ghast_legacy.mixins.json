@@ -9,7 +9,8 @@
   ],
   "mixins": [
     "LivingEntityAccessor",
-    "NetherFossilGenerator$PieceMixin"
+    "NetherFossilGenerator$PieceMixin",
+    "PiglinBrainMixin"
   ],
   "injectors": {
     "defaultRequire": 1
