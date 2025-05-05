@@ -116,12 +116,12 @@ public class HappyGhastEntity extends AnimalEntity {
     @Override
     protected void initGoals() {
         super.initGoals();
-        this.goalSelector.add(1, new HappyGhastTemptGoal(this, 1, Ingredient.ofItems(Items.SNOWBALL), false));
-        this.goalSelector.add(1, new HappyGhastFollowHarnessGoal(this));
-        this.goalSelector.add(2, new HappyGhastLookAtEntityGoal(this, PlayerEntity.class, 128.0F));
-        this.goalSelector.add(4, new HappyGhastWanderAroundGoal(this));
-        this.goalSelector.add(5, new LookAroundGoal(this));
-        this.goalSelector.add(6, new HappyGhastSwimGoal(this));
+        this.goalSelector.add(1, new HappyGhastSwimGoal(this));
+        this.goalSelector.add(2, new LookAroundGoal(this));
+        this.goalSelector.add(3, new HappyGhastWanderAroundGoal(this));
+        this.goalSelector.add(5, new HappyGhastLookAtEntityGoal(this, PlayerEntity.class, 128.0F));
+        this.goalSelector.add(6, new HappyGhastTemptGoal(this, 1, Ingredient.ofItems(Items.SNOWBALL), false));
+        this.goalSelector.add(6, new HappyGhastFollowHarnessGoal(this));
     }
 
     @Override
@@ -469,7 +469,6 @@ public class HappyGhastEntity extends AnimalEntity {
 
     static class HappyGhastMoveControl extends MoveControl {
         private final HappyGhastEntity happyGhast;
-        private int collisionCheckCooldown;
 
         public HappyGhastMoveControl(HappyGhastEntity happyGhast) {
             super(happyGhast);
@@ -481,29 +480,7 @@ public class HappyGhastEntity extends AnimalEntity {
             if (this.happyGhast.isCollidable()) {
                 this.state = State.WAIT;
                 this.happyGhast.stopMovement();
-            }
-            if (this.state == State.MOVE_TO) {
-                if (this.collisionCheckCooldown-- <= 0) {
-                    this.collisionCheckCooldown += this.happyGhast.getRandom().nextInt(5) + 2;
-                    Vec3d vec3d = new Vec3d(this.targetX - this.happyGhast.getX(), this.targetY - this.happyGhast.getY(), this.targetZ - this.happyGhast.getZ());
-                    double d = vec3d.length();
-                    vec3d = vec3d.normalize();
-                    if (this.willCollide(vec3d, MathHelper.ceil(d)))
-                        this.happyGhast.setVelocity(this.happyGhast.getVelocity().add(vec3d.multiply(0.1)));
-                    else
-                        this.state = State.WAIT;
-                }
-            }
-        }
-
-        private boolean willCollide(Vec3d direction, int steps) {
-            Box box = this.happyGhast.getBoundingBox();
-            for (int i = 1; i < steps; ++i) {
-                box = box.offset(direction);
-                if (!this.happyGhast.getWorld().isSpaceEmpty(this.happyGhast, box))
-                    return false;
-            }
-            return true;
+            } else super.tick();
         }
     }
 
