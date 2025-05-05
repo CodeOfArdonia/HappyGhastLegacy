@@ -7,6 +7,7 @@ import com.iafenvoy.ghast.mixin.LivingEntityAccessor;
 import com.iafenvoy.ghast.registry.HGEntities;
 import com.iafenvoy.ghast.registry.HGSounds;
 import com.iafenvoy.ghast.registry.HGTags;
+import com.iafenvoy.ghast.util.RegistryHelper;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -221,7 +222,7 @@ public class HappyGhastEntity extends AnimalEntity {
                     this.getWorld().playSoundFromEntity(null, this, HGSounds.ENTITY_HAPPY_GHAST_EQUIP.get(), SoundCategory.NEUTRAL, 1, 1);
                     return ActionResult.SUCCESS;
                 }
-            } else if (stack.isOf(Items.SHEARS) && (EnchantmentHelper.getLevel(Enchantments.BINDING_CURSE, this.getBodyArmor()) == 0 || player.isCreative())) {
+            } else if (stack.isOf(Items.SHEARS) && (EnchantmentHelper.getLevel(RegistryHelper.getEnchantment(this.getRegistryManager(), Enchantments.BINDING_CURSE), this.getBodyArmor()) == 0 || player.isCreative())) {
                 if (!this.getWorld().isClient) {
                     if (!player.getAbilities().creativeMode)
                         player.getInventory().offerOrDrop(this.getBodyArmor());
