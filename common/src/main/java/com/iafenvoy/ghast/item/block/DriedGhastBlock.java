@@ -2,10 +2,12 @@ package com.iafenvoy.ghast.item.block;
 
 import com.iafenvoy.ghast.entity.HappyGhastEntity;
 import com.iafenvoy.ghast.registry.HGSounds;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.block.*;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.pathing.NavigationType;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
@@ -31,6 +33,7 @@ import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("deprecation")
 public class DriedGhastBlock extends HorizontalFacingBlock implements Waterloggable {
+    private static final MapCodec<DriedGhastBlock> CODEC = createCodec(settings -> new DriedGhastBlock());
     public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
     public static final IntProperty HYDRATION = IntProperty.of("hydration", 0, 3);
     private static final VoxelShape SHAPE = createCuboidShape(3, 0, 3, 13, 10, 13);
@@ -128,7 +131,7 @@ public class DriedGhastBlock extends HorizontalFacingBlock implements Waterlogga
     }
 
     @Override
-    public boolean canFillWithFluid(BlockView world, BlockPos pos, BlockState state, Fluid fluid) {
+    public boolean canFillWithFluid(@Nullable PlayerEntity player, BlockView world, BlockPos pos, BlockState state, Fluid fluid) {
         return fluid == Fluids.WATER || fluid == Fluids.FLOWING_WATER;
     }
 
@@ -158,5 +161,10 @@ public class DriedGhastBlock extends HorizontalFacingBlock implements Waterlogga
     @Override
     public boolean canPathfindThrough(BlockState state, BlockView world, BlockPos pos, NavigationType type) {
         return false;
+    }
+
+    @Override
+    protected MapCodec<? extends HorizontalFacingBlock> getCodec() {
+        return CODEC;
     }
 }
