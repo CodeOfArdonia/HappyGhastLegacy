@@ -21,7 +21,7 @@ public class HappyGhastWanderAroundGoal extends WanderAroundGoal {
         double z = this.happyGhast.getZ() + (random.nextFloat() * 2.0F - 1.0F) * 16.0F;
         Vec3d target = new Vec3d(x, y, z);
         if (this.happyGhast.outOfWanderRange())
-            target = Vec3d.ofCenter(this.happyGhast.getHomePos().getPos());
+            target = Vec3d.ofCenter(this.happyGhast.getHomePos().pos());
         return target;
     }
 
