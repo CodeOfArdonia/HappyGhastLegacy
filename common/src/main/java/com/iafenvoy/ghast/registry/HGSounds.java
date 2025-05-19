@@ -35,6 +35,7 @@ public final class HGSounds {
     public static final RegistrySupplier<SoundEvent> ENTITY_HAPPY_GHAST_UNEQUIP = register("entity.happy_ghast.unequip");
     public static final RegistrySupplier<SoundEvent> ENTITY_HAPPY_GHAST_HARNESS_GOGGLES_UP = register("entity.happy_ghast.harness_goggles_up");
     public static final RegistrySupplier<SoundEvent> ENTITY_HAPPY_GHAST_HARNESS_GOGGLES_DOWN = register("entity.happy_ghast.harness_goggles_down");
+    public static final RegistrySupplier<SoundEvent> TEARS = register("tears");
 
     public static final Supplier<BlockSoundGroup> DRIED_GHAST = Suppliers.memoize(() -> new BlockSoundGroup(1.0F, 1.0F, BLOCK_DRIED_GHAST_BREAK.get(), BLOCK_DRIED_GHAST_STEP.get(), SoundEvents.INTENTIONALLY_EMPTY, BLOCK_DRIED_GHAST_HIT.get(), BLOCK_DRIED_GHAST_FALL.get()));
 
