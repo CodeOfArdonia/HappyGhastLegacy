@@ -186,5 +186,10 @@
       "happy_ghast_legacy:mob/happy_ghast/harness_unequip"
     ],
     "subtitle": "subtitles.entity.happy_ghast.unequip"
+  },
+  "tears": {
+    "sounds": [
+      "happy_ghast_legacy:tears"
+    ]
   }
 }

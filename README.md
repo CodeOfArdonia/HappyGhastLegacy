@@ -7,6 +7,7 @@ Key features:
 - Happy Ghast: Allow up to 4 players sit on it.
 - 16 colors harness.
 - Dried Ghast which can be found in nether fossil.
+- New music disc `Tears`
 
 For all features you can check out [Minecraft Wiki](https://minecraft.wiki/w/Happy_Ghast)
 
