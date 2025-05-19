@@ -8,6 +8,7 @@
     "ClientPlayerEntityMixin"
   ],
   "mixins": [
+    "GhastEntityMixin",
     "LivingEntityAccessor",
     "NetherFossilGenerator$PieceMixin",
     "PiglinBrainMixin"
