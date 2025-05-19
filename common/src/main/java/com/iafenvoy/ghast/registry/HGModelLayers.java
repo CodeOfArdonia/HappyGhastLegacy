@@ -7,5 +7,4 @@ import net.minecraft.util.Identifier;
 public final class HGModelLayers {
     public static final EntityModelLayer HAPPY_GHAST = new EntityModelLayer(Identifier.of(HappyGhastLegacy.MOD_ID, "happy_ghast"), "main");
     public static final EntityModelLayer HAPPY_GHAST_HARNESS = new EntityModelLayer(Identifier.of(HappyGhastLegacy.MOD_ID, "happy_ghast_harness"), "main");
-
 }
