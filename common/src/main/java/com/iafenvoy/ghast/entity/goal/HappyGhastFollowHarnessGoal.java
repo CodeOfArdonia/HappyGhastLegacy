@@ -7,11 +7,11 @@ import net.minecraft.recipe.Ingredient;
 
 public class HappyGhastFollowHarnessGoal extends HappyGhastTemptGoal {
     public HappyGhastFollowHarnessGoal(HappyGhastEntity happyGhast) {
-        super(happyGhast, 1, Ingredient.ofItems(HarnessItem.getAll().toArray(ItemConvertible[]::new)), false);
+        super(happyGhast, Ingredient.ofItems(HarnessItem.getAll().toArray(ItemConvertible[]::new)));
     }
 
     @Override
     public boolean canStart() {
-        return !this.mob.isBaby() && super.canStart();
+        return !this.happyGhast.isBaby() && super.canStart();
     }
 }

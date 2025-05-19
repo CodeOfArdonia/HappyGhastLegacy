@@ -2,6 +2,7 @@ package com.iafenvoy.ghast.registry;
 
 import com.iafenvoy.ghast.HappyGhastLegacy;
 import com.iafenvoy.ghast.item.HarnessItem;
+import dev.architectury.core.item.ArchitecturyRecordItem;
 import dev.architectury.core.item.ArchitecturySpawnEggItem;
 import dev.architectury.registry.CreativeTabRegistry;
 import dev.architectury.registry.registries.DeferredRegister;
@@ -11,6 +12,7 @@ import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.DyeColor;
+import net.minecraft.util.Rarity;
 
 import java.util.function.Supplier;
 
@@ -35,6 +37,7 @@ public final class HGItems {
     public static final RegistrySupplier<Item> RED_HARNESS = register("red_harness", () -> new HarnessItem(DyeColor.RED));
     public static final RegistrySupplier<Item> WHITE_HARNESS = register("white_harness", () -> new HarnessItem(DyeColor.WHITE));
     public static final RegistrySupplier<Item> YELLOW_HARNESS = register("yellow_harness", () -> new HarnessItem(DyeColor.YELLOW));
+    public static final RegistrySupplier<Item> MUSIC_DISC_TEARS = register("music_disc_tears", () -> new ArchitecturyRecordItem(10, HGSounds.TEARS, new Item.Settings().maxCount(1).rarity(Rarity.UNCOMMON), 175));
 
     public static <T extends Item> RegistrySupplier<T> register(String id, Supplier<T> item) {
         return REGISTRY.register(id, item);
@@ -42,6 +45,7 @@ public final class HGItems {
 
     public static void init() {
         CreativeTabRegistry.append(ItemGroups.NATURAL, HGBlocks.DRIED_GHAST.get());
+        CreativeTabRegistry.append(ItemGroups.TOOLS, MUSIC_DISC_TEARS);
         CreativeTabRegistry.append(ItemGroups.TOOLS, HarnessItem.getAll().toArray(ItemConvertible[]::new));
         CreativeTabRegistry.append(ItemGroups.SPAWN_EGGS, HAPPY_GHAST_SPAWN_EGG.get());
     }
