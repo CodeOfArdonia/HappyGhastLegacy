@@ -1,6 +1,5 @@
 package com.iafenvoy.ghast.item;
 
-import com.iafenvoy.ghast.entity.HappyGhastEntity;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.dispenser.DispenserBehavior;
 import net.minecraft.block.dispenser.ItemDispenserBehavior;
@@ -34,7 +33,7 @@ public class HarnessItem extends Item {
     }
 
     @Override
-    public int getMaxUseTime(ItemStack itemstack) {
+    public int getMaxUseTime(ItemStack stack, LivingEntity user) {
         return 0;
     }
 
