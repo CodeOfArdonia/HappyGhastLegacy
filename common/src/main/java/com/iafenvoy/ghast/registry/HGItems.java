@@ -45,7 +45,7 @@ public final class HGItems {
 
     public static void init() {
         CreativeTabRegistry.append(ItemGroups.NATURAL, HGBlocks.DRIED_GHAST.get());
-        CreativeTabRegistry.append(ItemGroups.TOOLS, MUSIC_DISC_TEARS);
+        CreativeTabRegistry.append(ItemGroups.TOOLS, MUSIC_DISC_TEARS.get());
         CreativeTabRegistry.append(ItemGroups.TOOLS, HarnessItem.getAll().toArray(ItemConvertible[]::new));
         CreativeTabRegistry.append(ItemGroups.SPAWN_EGGS, HAPPY_GHAST_SPAWN_EGG.get());
     }

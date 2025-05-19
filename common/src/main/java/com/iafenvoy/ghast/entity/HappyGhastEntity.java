@@ -470,8 +470,7 @@ public class HappyGhastEntity extends AnimalEntity {
             ghast.bodyYaw = ghast.getYaw();
         } else {
             LivingEntity livingEntity = ghast.getTarget();
-            double d = 64.0;
-            if (livingEntity.squaredDistanceTo(ghast) < 4096.0) {
+            if (livingEntity.squaredDistanceTo(ghast) < 4096) {
                 double e = livingEntity.getX() - ghast.getX();
                 double f = livingEntity.getZ() - ghast.getZ();
                 ghast.setYaw(-((float) MathHelper.atan2(e, f)) * (180.0F / (float) Math.PI));
