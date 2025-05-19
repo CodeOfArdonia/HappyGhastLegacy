@@ -17,7 +17,6 @@ import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.control.LookControl;
 import net.minecraft.entity.ai.control.MoveControl;
-import net.minecraft.entity.ai.goal.LookAroundGoal;
 import net.minecraft.entity.ai.pathing.BirdNavigation;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
@@ -50,6 +49,7 @@ import java.util.Set;
 public class HappyGhastEntity extends AnimalEntity {
     private static final double STANDARD_RIDER_OFFSET = 1.35;
     private long currentAge = 0;
+    private int stillTimeout = 0;
 
     public HappyGhastEntity(EntityType<HappyGhastEntity> type, World world) {
         super(type, world);
@@ -65,12 +65,14 @@ public class HappyGhastEntity extends AnimalEntity {
     public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
         nbt.putLong("currentAge", this.currentAge);
+        nbt.putInt("still_timeout", this.stillTimeout);
     }
 
     @Override
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
         this.currentAge = nbt.getLong("currentAge");
+        this.stillTimeout = nbt.getInt("still_timeout");
     }
 
     @Override
@@ -116,11 +118,10 @@ public class HappyGhastEntity extends AnimalEntity {
     protected void initGoals() {
         super.initGoals();
         this.goalSelector.add(1, new HappyGhastSwimGoal(this));
-        this.goalSelector.add(2, new LookAroundGoal(this));
-        this.goalSelector.add(3, new HappyGhastWanderAroundGoal(this));
         this.goalSelector.add(5, new HappyGhastLookAtEntityGoal(this, PlayerEntity.class, 128.0F));
-        this.goalSelector.add(6, new HappyGhastTemptGoal(this, 1, Ingredient.ofItems(Items.SNOWBALL), false));
-        this.goalSelector.add(6, new HappyGhastFollowHarnessGoal(this));
+        this.goalSelector.add(7, new HappyGhastTemptGoal(this, Ingredient.ofItems(Items.SNOWBALL)));
+        this.goalSelector.add(7, new HappyGhastFollowHarnessGoal(this));
+        this.goalSelector.add(3, new HappyGhastFlyRandomlyGoal(this));
     }
 
     @Override
@@ -154,7 +155,7 @@ public class HappyGhastEntity extends AnimalEntity {
 
     @Override
     protected void addPassenger(Entity passenger) {
-        if (!this.hasPassengers())
+        if (!this.hasPassengers() && !this.getBodyArmor().isEmpty())
             this.getWorld().playSound(null, this.getX(), this.getY(), this.getZ(), HGSounds.ENTITY_HAPPY_GHAST_HARNESS_GOGGLES_DOWN.get(), this.getSoundCategory(), 1, 1);
         super.addPassenger(passenger);
     }
@@ -162,7 +163,7 @@ public class HappyGhastEntity extends AnimalEntity {
     @Override
     protected void removePassenger(Entity passenger) {
         super.removePassenger(passenger);
-        if (!this.hasPassengers()) {
+        if (!this.hasPassengers() && !this.getBodyArmor().isEmpty()) {
             this.getWorld().playSound(null, this.getX(), this.getY(), this.getZ(), HGSounds.ENTITY_HAPPY_GHAST_HARNESS_GOGGLES_UP.get(), this.getSoundCategory(), 1, 1);
             this.rememberHomePos();
         }
@@ -171,7 +172,7 @@ public class HappyGhastEntity extends AnimalEntity {
     @Nullable
     @Override
     public LivingEntity getControllingPassenger() {
-        return !this.isAiDisabled() && !this.hasPlayerOnTop() && this.getFirstPassenger() instanceof PlayerEntity playerEntity ? playerEntity : super.getControllingPassenger();
+        return !this.isAiDisabled() && !this.shouldStay() && !this.getBodyArmor().isEmpty() && this.getFirstPassenger() instanceof PlayerEntity playerEntity ? playerEntity : super.getControllingPassenger();
     }
 
     @Override
@@ -244,7 +245,7 @@ public class HappyGhastEntity extends AnimalEntity {
                 this.heal(4);
                 return ActionResult.SUCCESS;
             }
-        } else if (!this.getBodyArmor().isEmpty()) {
+        } else {
             player.startRiding(this);
             return ActionResult.SUCCESS;
         }
@@ -258,7 +259,7 @@ public class HappyGhastEntity extends AnimalEntity {
 
     @Override
     public boolean isCollidable() {
-        return !this.isBaby() && this.hasPlayerOnTop();
+        return !this.isBaby() && this.shouldStay();
     }
 
     public boolean hasPlayerOnTop() {
@@ -268,6 +269,10 @@ public class HappyGhastEntity extends AnimalEntity {
             if (!playerEntity.isSpectator() && box2.contains(playerEntity.getX(), playerEntity.getY(), playerEntity.getZ()))
                 return true;
         return false;
+    }
+
+    public boolean shouldStay() {
+        return this.stillTimeout > 0;
     }
 
     @Override
@@ -370,9 +375,11 @@ public class HappyGhastEntity extends AnimalEntity {
         this.currentAge++;
         if (this.currentAge % 600 == 0 || this.currentAge % 20 == 0 && (192 <= this.getY() && this.getY() <= 196 || this.getWorld().hasRain(this.getBlockPos())))
             this.heal(1);
+        if (this.stillTimeout > 0) this.stillTimeout--;
+        if (this.hasPlayerOnTop()) this.stillTimeout = 10;
         EntityAttributeInstance kbResist = this.getAttributeInstance(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE);
         if (kbResist != null) {
-            double newValue = this.hasPlayerOnTop() ? 1 : this.getPassengerList().size() * 0.05;
+            double newValue = this.shouldStay() ? 1 : this.getPassengerList().size() * 0.05;
             if (newValue != kbResist.getValue())
                 kbResist.setBaseValue(newValue);
         }
@@ -456,8 +463,7 @@ public class HappyGhastEntity extends AnimalEntity {
             ghast.bodyYaw = ghast.getYaw();
         } else {
             LivingEntity livingEntity = ghast.getTarget();
-            double d = 64.0;
-            if (livingEntity.squaredDistanceTo(ghast) < 4096.0) {
+            if (livingEntity.squaredDistanceTo(ghast) < 4096) {
                 double e = livingEntity.getX() - ghast.getX();
                 double f = livingEntity.getZ() - ghast.getZ();
                 ghast.setYaw(-((float) MathHelper.atan2(e, f)) * (180.0F / (float) Math.PI));
@@ -468,6 +474,7 @@ public class HappyGhastEntity extends AnimalEntity {
 
     static class HappyGhastMoveControl extends MoveControl {
         private final HappyGhastEntity happyGhast;
+        private int collisionCheckCooldown;
 
         public HappyGhastMoveControl(HappyGhastEntity happyGhast) {
             super(happyGhast);
@@ -479,7 +486,28 @@ public class HappyGhastEntity extends AnimalEntity {
             if (this.happyGhast.isCollidable()) {
                 this.state = State.WAIT;
                 this.happyGhast.stopMovement();
-            } else super.tick();
+            } else if (this.state == State.MOVE_TO) {
+                if (this.collisionCheckCooldown-- <= 0) {
+                    this.collisionCheckCooldown += this.happyGhast.getRandom().nextInt(5) + 2;
+                    Vec3d vec3d = new Vec3d(this.targetX - this.happyGhast.getX(), this.targetY - this.happyGhast.getY(), this.targetZ - this.happyGhast.getZ());
+                    double d = vec3d.length();
+                    vec3d = vec3d.normalize();
+                    if (this.willCollide(vec3d, MathHelper.ceil(d)))
+                        this.happyGhast.setVelocity(this.happyGhast.getVelocity().add(vec3d.multiply(0.05)));
+                    else
+                        this.state = State.WAIT;
+                }
+            }
+        }
+
+        private boolean willCollide(Vec3d direction, int steps) {
+            Box box = this.happyGhast.getBoundingBox();
+            for (int i = 1; i < steps; ++i) {
+                box = box.offset(direction);
+                if (!this.happyGhast.getWorld().isSpaceEmpty(this.happyGhast, box))
+                    return false;
+            }
+            return true;
         }
     }
 
@@ -507,7 +535,7 @@ public class HappyGhastEntity extends AnimalEntity {
 
         @Override
         public void tick() {
-            if (this.happyGhast.hasPlayerOnTop()) {
+            if (this.happyGhast.shouldStay()) {
                 float f = getYawToSubtract(this.happyGhast.getYaw());
                 this.happyGhast.setYaw(this.happyGhast.getYaw() - f);
                 this.happyGhast.setHeadYaw(this.happyGhast.getYaw());
@@ -529,4 +557,5 @@ public class HappyGhastEntity extends AnimalEntity {
             return f;
         }
     }
+
 }
