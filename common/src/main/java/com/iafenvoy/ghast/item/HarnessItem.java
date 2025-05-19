@@ -1,8 +1,10 @@
 package com.iafenvoy.ghast.item;
 
+import com.iafenvoy.ghast.entity.HappyGhastEntity;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.dispenser.DispenserBehavior;
 import net.minecraft.block.dispenser.ItemDispenserBehavior;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DyeColor;
