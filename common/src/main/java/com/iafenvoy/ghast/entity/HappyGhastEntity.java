@@ -50,6 +50,7 @@ public class HappyGhastEntity extends AnimalEntity {
     private static final double STANDARD_RIDER_OFFSET = 1.35;
     private long currentAge = 0;
     private int stillTimeout = 0;
+    private HappyGhastTemptGoal foodGoal, harnessGoal;
 
     public HappyGhastEntity(EntityType<HappyGhastEntity> type, World world) {
         super(type, world);
@@ -120,8 +121,8 @@ public class HappyGhastEntity extends AnimalEntity {
         super.initGoals();
         this.goalSelector.add(1, new HappyGhastSwimGoal(this));
         this.goalSelector.add(5, new HappyGhastLookAtEntityGoal(this, PlayerEntity.class, 128.0F));
-        this.goalSelector.add(7, new HappyGhastTemptGoal(this, Ingredient.ofItems(Items.SNOWBALL)));
-        this.goalSelector.add(7, new HappyGhastFollowHarnessGoal(this));
+        this.goalSelector.add(7, this.foodGoal = new HappyGhastTemptGoal(this, Ingredient.ofItems(Items.SNOWBALL)));
+        this.goalSelector.add(7, this.harnessGoal = new HappyGhastFollowHarnessGoal(this));
         this.goalSelector.add(3, new HappyGhastFlyRandomlyGoal(this));
     }
 
@@ -408,6 +409,10 @@ public class HappyGhastEntity extends AnimalEntity {
         EntityData data = super.initialize(world, difficulty, spawnReason, entityData, entityNbt);
         this.rememberHomePos();
         return data;
+    }
+
+    public boolean isFollowingPlayer() {
+        return this.foodGoal.isActive() || this.harnessGoal.isActive();
     }
 
     public void rememberHomePos() {
