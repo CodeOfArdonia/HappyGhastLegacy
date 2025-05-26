@@ -43,7 +43,6 @@ import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
 import java.util.Set;
 
 public class HappyGhastEntity extends AnimalEntity {
@@ -120,10 +119,12 @@ public class HappyGhastEntity extends AnimalEntity {
     protected void initGoals() {
         super.initGoals();
         this.goalSelector.add(1, new HappyGhastSwimGoal(this));
-        this.goalSelector.add(5, new HappyGhastLookAtEntityGoal(this, PlayerEntity.class, 128.0F));
+        this.goalSelector.add(3, new HappyGhastFlyRandomlyGoal(this));
+        this.goalSelector.add(4, new FollowEntityPredicateGoal(this, target -> target.getType().isIn(HGTags.HAPPY_GHAST_FOLLOW) && !target.isBaby(), 1.1, 5, 16));
+        this.goalSelector.add(5, new HappyGhastLookAtEntityGoal(this, PlayerEntity.class, 64));
+        this.goalSelector.add(5, new FollowEntityPredicateGoal(this, target -> target.getType() == EntityType.PLAYER, 1.1, 5, 16));
         this.goalSelector.add(7, this.foodGoal = new HappyGhastTemptGoal(this, Ingredient.ofItems(Items.SNOWBALL)));
         this.goalSelector.add(7, this.harnessGoal = new HappyGhastFollowHarnessGoal(this));
-        this.goalSelector.add(3, new HappyGhastFlyRandomlyGoal(this));
     }
 
     @Override
@@ -170,6 +171,12 @@ public class HappyGhastEntity extends AnimalEntity {
             this.getWorld().playSound(null, this.getX(), this.getY(), this.getZ(), HGSounds.ENTITY_HAPPY_GHAST_HARNESS_GOGGLES_UP.get(), this.getSoundCategory(), 1, 1);
             this.rememberHomePos();
         }
+    }
+
+    @Override
+    public void detachLeash(boolean sendPacket, boolean dropItem) {
+        super.detachLeash(sendPacket, dropItem);
+        this.rememberHomePos();
     }
 
     @Nullable
@@ -401,7 +408,6 @@ public class HappyGhastEntity extends AnimalEntity {
         super.tickMovement();
         this.setNoGravity(true);
         if (this.isTouchingWater()) this.removeAllPassengers();
-        if (this.outOfWanderRange()) this.rememberHomePos();
     }
 
     @Override
@@ -417,18 +423,6 @@ public class HappyGhastEntity extends AnimalEntity {
 
     public void rememberHomePos() {
         this.brain.remember(MemoryModuleType.HOME, GlobalPos.create(this.getWorld().getRegistryKey(), this.getBlockPos()));
-    }
-
-    public boolean outOfWanderRange() {
-        if (this.getWorld().isClient) return false;
-        GlobalPos pos = this.getHomePos();
-        int range = this.getBodyArmor().isEmpty() && !this.isBaby() ? 64 : 32;
-        return !this.getWorld().getRegistryKey().equals(pos.getDimension()) || this.getPos().distanceTo(Vec3d.ofCenter(pos.getPos())) > range * range;
-    }
-
-    public GlobalPos getHomePos() {
-        if (!this.brain.hasMemoryModule(MemoryModuleType.HOME)) this.rememberHomePos();
-        return Optional.ofNullable(this.getBrain().getOptionalMemory(MemoryModuleType.HOME)).map(o -> o.orElse(GlobalPos.create(World.OVERWORLD, BlockPos.ORIGIN))).orElse(GlobalPos.create(World.OVERWORLD, BlockPos.ORIGIN));
     }
 
     public void setBodyArmor(ItemStack stack) {
