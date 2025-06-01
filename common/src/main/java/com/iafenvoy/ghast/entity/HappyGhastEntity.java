@@ -187,7 +187,7 @@ public class HappyGhastEntity extends AnimalEntity {
 
     @Override
     public boolean canAddPassenger(Entity passenger) {
-        return this.getPassengerList().size() < 4;
+        return !this.isBaby() && this.getPassengerList().size() < 4;
     }
 
     @Override
