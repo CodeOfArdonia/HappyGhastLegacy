@@ -409,9 +409,6 @@ public class HappyGhastEntity extends AnimalEntity {
 
     public boolean isFollowingPlayer() {
         return this.foodGoal.isActive() || this.harnessGoal.isActive();
-  
-    public void rememberHomePos() {
-        this.brain.remember(MemoryModuleType.HOME, GlobalPos.create(this.getWorld().getRegistryKey(), this.getBlockPos()));
     }
 
     public void rememberHomePos() {
