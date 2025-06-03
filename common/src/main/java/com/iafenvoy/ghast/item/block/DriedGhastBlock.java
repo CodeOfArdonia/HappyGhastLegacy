@@ -158,11 +158,6 @@ public class DriedGhastBlock extends HorizontalFacingBlock implements Waterlogga
     }
 
     @Override
-    protected boolean canPathfindThrough(BlockState state, NavigationType type) {
-        return false;
-    }
-
-    @Override
     protected MapCodec<? extends HorizontalFacingBlock> getCodec() {
         return CODEC;
     }

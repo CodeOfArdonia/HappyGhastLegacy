@@ -54,6 +54,7 @@ public class HappyGhastEntity extends AnimalEntity {
     public HappyGhastEntity(EntityType<HappyGhastEntity> type, World world) {
         super(type, world);
         this.experiencePoints = 0;
+        this.setStepHeight(0.6f);
         this.setAiDisabled(false);
         this.setPersistent();
         this.moveControl = new HappyGhastMoveControl(this);
@@ -132,7 +133,7 @@ public class HappyGhastEntity extends AnimalEntity {
     }
 
     public double getMountedHeightOffset() {
-        return (double) this.getDimensions(EntityPose.STANDING).height() * 0.75 + 0.5D;
+        return (double) this.getDimensions(EntityPose.STANDING).height * 0.75 + 0.5D;
     }
 
     @Override
@@ -234,7 +235,7 @@ public class HappyGhastEntity extends AnimalEntity {
                 if (!this.getWorld().isClient) {
                     if (!player.getAbilities().creativeMode)
                         player.getInventory().offerOrDrop(this.getBodyArmor());
-                    stack.damage(1, player, hand == Hand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
+                    stack.damage(1, player, e -> e.sendEquipmentBreakStatus(hand == Hand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND));
                     this.setBodyArmor(ItemStack.EMPTY);
                 }
                 this.getWorld().playSoundFromEntity(null, this, HGSounds.ENTITY_HAPPY_GHAST_UNEQUIP.get(), SoundCategory.NEUTRAL, 1, 1);
@@ -401,17 +402,14 @@ public class HappyGhastEntity extends AnimalEntity {
     }
 
     @Override
-    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
-        EntityData data = super.initialize(world, difficulty, spawnReason, entityData);
+    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData, @Nullable NbtCompound entityNbt) {
+        EntityData data = super.initialize(world, difficulty, spawnReason, entityData, entityNbt);
         this.rememberHomePos();
         return data;
     }
 
     public boolean isFollowingPlayer() {
         return this.foodGoal.isActive() || this.harnessGoal.isActive();
-  
-    public void rememberHomePos() {
-        this.brain.remember(MemoryModuleType.HOME, GlobalPos.create(this.getWorld().getRegistryKey(), this.getBlockPos()));
     }
 
     public void rememberHomePos() {
@@ -423,12 +421,10 @@ public class HappyGhastEntity extends AnimalEntity {
         this.rememberHomePos();
     }
 
-    @Override
     public ItemStack getBodyArmor() {
         return this.getEquippedStack(EquipmentSlot.CHEST);
     }
 
-    @Override
     public void stopMovement() {
         this.getNavigation().stop();
         this.setSidewaysSpeed(0.0F);
@@ -443,7 +439,7 @@ public class HappyGhastEntity extends AnimalEntity {
         ghast.setBaby(true);
         ghast.setHeadYaw(yaw);
         ghast.setVelocity(0, 0, 0);
-        ghast.initialize(world, world.getLocalDifficulty(pos), reason, null);
+        ghast.initialize(world, world.getLocalDifficulty(pos), reason, null, null);
         return ghast;
     }
 
@@ -454,8 +450,7 @@ public class HappyGhastEntity extends AnimalEntity {
                 .add(EntityAttributes.GENERIC_ARMOR, 0.0D)
                 .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.0D)
                 .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 64.0D)
-                .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.32D)
-                .add(EntityAttributes.GENERIC_STEP_HEIGHT, 0.6D);
+                .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.32D);
     }
 
     public static void updateYaw(MobEntity ghast) {
