@@ -5,12 +5,11 @@ import com.iafenvoy.ghast.HappyGhastLegacyClient;
 import dev.architectury.platform.Platform;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 
 @Mod(HappyGhastLegacy.MOD_ID)
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class HappyGhastLegacyForge {
     public HappyGhastLegacyForge() {
         HappyGhastLegacy.init();
