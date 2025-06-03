@@ -53,7 +53,6 @@ public class HappyGhastEntity extends AnimalEntity {
 
     public HappyGhastEntity(EntityType<HappyGhastEntity> type, World world) {
         super(type, world);
-        this.setStepHeight(0.6F);
         this.experiencePoints = 0;
         this.setAiDisabled(false);
         this.setPersistent();
@@ -132,9 +131,8 @@ public class HappyGhastEntity extends AnimalEntity {
         return false;
     }
 
-    @Override
     public double getMountedHeightOffset() {
-        return super.getMountedHeightOffset() + 0.5D;
+        return (double) this.getDimensions(EntityPose.STANDING).height() * 0.75 + 0.5D;
     }
 
     @Override
@@ -208,12 +206,9 @@ public class HappyGhastEntity extends AnimalEntity {
     public boolean isInvulnerableTo(DamageSource source) {
         return source.isOf(DamageTypes.FALL) ||
                 source.isOf(DamageTypes.DROWN) && this.isBaby() ||
+                source.isOf(DamageTypes.EXPLOSION) ||
+                source.isOf(DamageTypes.PLAYER_EXPLOSION) ||
                 super.isInvulnerableTo(source);
-    }
-
-    @Override
-    public boolean isImmuneToExplosion() {
-        return true;
     }
 
     @Override
@@ -239,7 +234,7 @@ public class HappyGhastEntity extends AnimalEntity {
                 if (!this.getWorld().isClient) {
                     if (!player.getAbilities().creativeMode)
                         player.getInventory().offerOrDrop(this.getBodyArmor());
-                    stack.damage(1, player, e -> e.sendEquipmentBreakStatus(hand == Hand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND));
+                    stack.damage(1, player, hand == Hand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
                     this.setBodyArmor(ItemStack.EMPTY);
                 }
                 this.getWorld().playSoundFromEntity(null, this, HGSounds.ENTITY_HAPPY_GHAST_UNEQUIP.get(), SoundCategory.NEUTRAL, 1, 1);
@@ -277,7 +272,7 @@ public class HappyGhastEntity extends AnimalEntity {
 
     public boolean hasPlayerOnTop() {
         Box box = this.getBoundingBox();
-        Box box2 = new Box(box.minX - 1.0, box.maxY, box.minZ - 1.0, box.maxX + 1.0, box.maxY + box.getYLength() / 2.0, box.maxZ + 1.0);
+        Box box2 = new Box(box.minX - 1.0, box.maxY, box.minZ - 1.0, box.maxX + 1.0, box.maxY + box.getLengthY() / 2.0, box.maxZ + 1.0);
         for (PlayerEntity playerEntity : this.getWorld().getPlayers())
             if (!playerEntity.isSpectator() && box2.contains(playerEntity.getX(), playerEntity.getY(), playerEntity.getZ()))
                 return true;
@@ -353,11 +348,6 @@ public class HappyGhastEntity extends AnimalEntity {
     }
 
     @Override
-    public boolean canBreatheInWater() {
-        return this.isBaby() || super.canBreatheInWater();
-    }
-
-    @Override
     protected boolean shouldFollowLeash() {
         return false;
     }
@@ -411,14 +401,17 @@ public class HappyGhastEntity extends AnimalEntity {
     }
 
     @Override
-    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData, @Nullable NbtCompound entityNbt) {
-        EntityData data = super.initialize(world, difficulty, spawnReason, entityData, entityNbt);
+    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
+        EntityData data = super.initialize(world, difficulty, spawnReason, entityData);
         this.rememberHomePos();
         return data;
     }
 
     public boolean isFollowingPlayer() {
         return this.foodGoal.isActive() || this.harnessGoal.isActive();
+  
+    public void rememberHomePos() {
+        this.brain.remember(MemoryModuleType.HOME, GlobalPos.create(this.getWorld().getRegistryKey(), this.getBlockPos()));
     }
 
     public void rememberHomePos() {
@@ -430,10 +423,12 @@ public class HappyGhastEntity extends AnimalEntity {
         this.rememberHomePos();
     }
 
+    @Override
     public ItemStack getBodyArmor() {
         return this.getEquippedStack(EquipmentSlot.CHEST);
     }
 
+    @Override
     public void stopMovement() {
         this.getNavigation().stop();
         this.setSidewaysSpeed(0.0F);
@@ -448,7 +443,7 @@ public class HappyGhastEntity extends AnimalEntity {
         ghast.setBaby(true);
         ghast.setHeadYaw(yaw);
         ghast.setVelocity(0, 0, 0);
-        ghast.initialize(world, world.getLocalDifficulty(pos), reason, null, null);
+        ghast.initialize(world, world.getLocalDifficulty(pos), reason, null);
         return ghast;
     }
 
@@ -459,7 +454,8 @@ public class HappyGhastEntity extends AnimalEntity {
                 .add(EntityAttributes.GENERIC_ARMOR, 0.0D)
                 .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.0D)
                 .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 64.0D)
-                .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.32D);
+                .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.32D)
+                .add(EntityAttributes.GENERIC_STEP_HEIGHT, 0.6D);
     }
 
     public static void updateYaw(MobEntity ghast) {

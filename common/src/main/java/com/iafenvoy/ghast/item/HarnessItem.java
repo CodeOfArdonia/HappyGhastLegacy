@@ -47,8 +47,8 @@ public class HarnessItem extends Item {
     }
 
     public static boolean dispenseArmor(BlockPointer pointer, ItemStack armor) {
-        BlockPos blockPos = pointer.getPos().offset(pointer.getBlockState().get(DispenserBlock.FACING));
-        List<HappyGhastEntity> list = pointer.getWorld().getEntitiesByClass(HappyGhastEntity.class, new Box(blockPos), happyGhast -> happyGhast.getBodyArmor().isEmpty());
+        BlockPos blockPos = pointer.pos().offset(pointer.state().get(DispenserBlock.FACING));
+        List<HappyGhastEntity> list = pointer.world().getEntitiesByClass(HappyGhastEntity.class, new Box(blockPos), happyGhast -> happyGhast.getBodyArmor().isEmpty());
         if (list.isEmpty()) return false;
         else {
             list.get(0).setBodyArmor(armor.split(1));

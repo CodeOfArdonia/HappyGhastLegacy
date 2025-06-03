@@ -11,4 +11,4 @@ rootProject.name = 'happy_ghast_legacy'
 
 include 'common'
 include 'fabric'
-include 'forge'
+include 'neoforge'
