@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[47,)"
+loaderVersion = "[45,)"
 issueTrackerURL = "https://github.com/IAFEnvoy/HappyGhastLegacy/issues"
 license = "All Right Reserved"
 
@@ -16,20 +16,20 @@ logoFile = "logo.png"
 [[dependencies.happy_ghast_legacy]]
 modId = "forge"
 mandatory = true
-versionRange = "[47,)"
+versionRange = "[45,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.happy_ghast_legacy]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.20.1,1.20.5)"
+versionRange = "[1.19.3,1.20)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.happy_ghast_legacy]]
 modId = "architectury"
 mandatory = true
-versionRange = "[9.2.14,)"
+versionRange = "[0,)"
 ordering = "AFTER"
 side = "BOTH"

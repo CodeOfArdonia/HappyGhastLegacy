@@ -3,6 +3,7 @@ package com.iafenvoy.ghast.item.block;
 import com.iafenvoy.ghast.entity.HappyGhastEntity;
 import com.iafenvoy.ghast.registry.HGSounds;
 import net.minecraft.block.*;
+import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.pathing.NavigationType;
@@ -36,7 +37,7 @@ public class DriedGhastBlock extends HorizontalFacingBlock implements Waterlogga
     private static final VoxelShape SHAPE = createCuboidShape(3, 0, 3, 13, 10, 13);
 
     public DriedGhastBlock() {
-        super(Settings.create().mapColor(MapColor.GRAY).breakInstantly().sounds(HGSounds.DRIED_GHAST.get()).nonOpaque().ticksRandomly());
+        super(Settings.of(new Material(MapColor.GRAY, false, false, false, false, false, false, PistonBehavior.DESTROY)).breakInstantly().sounds(HGSounds.DRIED_GHAST.get()).nonOpaque().ticksRandomly());
         this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(HYDRATION, 0).with(WATERLOGGED, false));
     }
 

@@ -25,8 +25,8 @@
     "happy_ghast_legacy.mixins.json"
   ],
   "depends": {
-    "minecraft": "~1.20.1",
-    "architectury": ">=9.2.14",
+    "minecraft": "~1.19.4",
+    "architectury": "*",
     "fabric-api": "*"
   }
 }

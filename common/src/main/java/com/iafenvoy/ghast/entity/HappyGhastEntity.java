@@ -191,7 +191,7 @@ public class HappyGhastEntity extends AnimalEntity {
     }
 
     @Override
-    public void updatePassengerPosition(Entity passenger, PositionUpdater positionUpdater) {
+    public void updatePassengerPosition(Entity passenger) {
         if (this.hasPassenger(passenger)) {
             Vec3d offset = (switch (this.getPassengerList().indexOf(passenger)) {
                 case 0 -> new Vec3d(STANDARD_RIDER_OFFSET, this.getMountedHeightOffset(), 0);
@@ -200,7 +200,7 @@ public class HappyGhastEntity extends AnimalEntity {
                 case 3 -> new Vec3d(0, this.getMountedHeightOffset(), STANDARD_RIDER_OFFSET);
                 default -> Vec3d.ZERO;
             }).rotateY((float) (-Math.toRadians(this.getYaw()) - Math.PI / 2));
-            positionUpdater.accept(passenger, this.getX() + offset.x, this.getY() + offset.y, this.getZ() + offset.z);
+            passenger.setPosition(this.getX() + offset.x, this.getY() + offset.y, this.getZ() + offset.z);
         }
     }
 
@@ -299,7 +299,7 @@ public class HappyGhastEntity extends AnimalEntity {
     }
 
     @Override
-    protected Vec3d getControlledMovementInput(PlayerEntity controllingPlayer, Vec3d movementInput) {
+    protected Vec3d getControlledMovementInput(LivingEntity controllingPlayer, Vec3d movementInput) {
         float f = controllingPlayer.sidewaysSpeed;
         float g = 0.0F;
         float h = 0.0F;
@@ -323,7 +323,7 @@ public class HappyGhastEntity extends AnimalEntity {
     }
 
     @Override
-    protected void tickControlled(PlayerEntity controllingPlayer, Vec3d movementInput) {
+    protected void tickControlled(LivingEntity controllingPlayer, Vec3d movementInput) {
         super.tickControlled(controllingPlayer, movementInput);
         Vec2f vec2f = this.getGhastRotation(controllingPlayer);
         float f = this.getYaw();
