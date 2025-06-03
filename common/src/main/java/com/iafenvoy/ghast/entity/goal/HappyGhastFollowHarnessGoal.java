@@ -12,6 +12,6 @@ public class HappyGhastFollowHarnessGoal extends HappyGhastTemptGoal {
 
     @Override
     public boolean canStart() {
-        return !this.happyGhast.isBaby() && super.canStart();
+        return !this.happyGhast.isBaby() && this.happyGhast.getBodyArmor().isEmpty() && super.canStart();
     }
 }

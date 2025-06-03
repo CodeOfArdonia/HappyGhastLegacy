@@ -17,6 +17,7 @@ public class HappyGhastFlyRandomlyGoal extends Goal {
 
     @Override
     public boolean canStart() {
+        if (this.happyGhast.isFollowingPlayer()) return false;
         MoveControl moveControl = this.happyGhast.getMoveControl();
         if (!moveControl.isMoving())
             return true;
@@ -40,6 +41,6 @@ public class HappyGhastFlyRandomlyGoal extends Goal {
         double d = this.happyGhast.getX() + (double) ((random.nextFloat() * 2.0F - 1.0F) * 16.0F);
         double e = this.happyGhast.getY() + (double) ((random.nextFloat() * 2.0F - 1.0F) * 16.0F);
         double f = this.happyGhast.getZ() + (double) ((random.nextFloat() * 2.0F - 1.0F) * 16.0F);
-        this.happyGhast.getMoveControl().moveTo(d, e, f, 0.1);
+        this.happyGhast.getMoveControl().moveTo(d, e - 8, f, 0.1);
     }
 }
