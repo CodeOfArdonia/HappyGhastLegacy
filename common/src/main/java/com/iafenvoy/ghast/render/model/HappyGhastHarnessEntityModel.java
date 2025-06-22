@@ -1,22 +1,18 @@
 package com.iafenvoy.ghast.render.model;
 
-
-import com.iafenvoy.ghast.entity.HappyGhastEntity;
+import com.iafenvoy.ghast.render.state.HappyGhastRenderState;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.model.*;
-import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.entity.model.EntityModel;
-import net.minecraft.client.util.math.MatrixStack;
 
 @Environment(EnvType.CLIENT)
-public class HappyGhastHarnessEntityModel extends EntityModel<HappyGhastEntity> {
-    private final ModelPart modelPart;
+public class HappyGhastHarnessEntityModel extends EntityModel<HappyGhastRenderState> {
     private final ModelPart goggles;
 
     public HappyGhastHarnessEntityModel(ModelPart modelPart) {
+        super(modelPart);
         this.goggles = modelPart.getChild("goggles");
-        this.modelPart = modelPart;
     }
 
     public static TexturedModelData getTexturedModelData() {
@@ -28,8 +24,8 @@ public class HappyGhastHarnessEntityModel extends EntityModel<HappyGhastEntity> 
     }
 
     @Override
-    public void setAngles(HappyGhastEntity entity, float limbAngle, float limbDistance, float animationProgress, float headYaw, float headPitch) {
-        if (entity.hasPassengers()) {
+    public void setAngles(HappyGhastRenderState state) {
+        if (state.passengers) {
             this.goggles.pitch = 0.0F;
             this.goggles.pivotY = 14.0F;
         } else {
@@ -38,9 +34,6 @@ public class HappyGhastHarnessEntityModel extends EntityModel<HappyGhastEntity> 
         }
     }
 
-    @Override
-    public void render(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, int color) {
-        this.modelPart.render(matrices, vertices, light, overlay, color);
-    }
+
 }
 

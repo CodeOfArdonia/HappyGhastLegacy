@@ -173,8 +173,8 @@ public class HappyGhastEntity extends AnimalEntity {
     }
 
     @Override
-    public void detachLeash(boolean sendPacket, boolean dropItem) {
-        super.detachLeash(sendPacket, dropItem);
+    public void detachLeash() {
+        super.detachLeash();
         this.rememberHomePos();
     }
 
@@ -204,12 +204,12 @@ public class HappyGhastEntity extends AnimalEntity {
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource source) {
+    public boolean isInvulnerableTo(ServerWorld world, DamageSource source) {
         return source.isOf(DamageTypes.FALL) ||
                 source.isOf(DamageTypes.DROWN) && this.isBaby() ||
                 source.isOf(DamageTypes.EXPLOSION) ||
                 source.isOf(DamageTypes.PLAYER_EXPLOSION) ||
-                super.isInvulnerableTo(source);
+                super.isInvulnerableTo(world, source);
     }
 
     @Override
@@ -386,7 +386,7 @@ public class HappyGhastEntity extends AnimalEntity {
             this.heal(1);
         if (this.stillTimeout > 0) this.stillTimeout--;
         if (this.hasPlayerOnTop()) this.stillTimeout = 10;
-        EntityAttributeInstance kbResist = this.getAttributeInstance(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE);
+        EntityAttributeInstance kbResist = this.getAttributeInstance(EntityAttributes.KNOCKBACK_RESISTANCE);
         if (kbResist != null) {
             double newValue = this.shouldStay() ? 1 : this.getPassengerList().size() * 0.05;
             if (newValue != kbResist.getValue())
@@ -447,13 +447,13 @@ public class HappyGhastEntity extends AnimalEntity {
 
     public static DefaultAttributeContainer.Builder createAttributes() {
         return MobEntity.createMobAttributes()
-                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.18D)
-                .add(EntityAttributes.GENERIC_MAX_HEALTH, 40.0D)
-                .add(EntityAttributes.GENERIC_ARMOR, 0.0D)
-                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.0D)
-                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 64.0D)
-                .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.32D)
-                .add(EntityAttributes.GENERIC_STEP_HEIGHT, 0.6D);
+                .add(EntityAttributes.MOVEMENT_SPEED, 0.18D)
+                .add(EntityAttributes.MAX_HEALTH, 40.0D)
+                .add(EntityAttributes.ARMOR, 0.0D)
+                .add(EntityAttributes.ATTACK_DAMAGE, 3.0D)
+                .add(EntityAttributes.FOLLOW_RANGE, 64.0D)
+                .add(EntityAttributes.FLYING_SPEED, 0.32D)
+                .add(EntityAttributes.STEP_HEIGHT, 0.6D);
     }
 
     public static void updateYaw(MobEntity ghast) {
@@ -514,7 +514,7 @@ public class HappyGhastEntity extends AnimalEntity {
     static class GhastlingNavigation extends BirdNavigation {
         public GhastlingNavigation(HappyGhastEntity entity, World world) {
             super(entity, world);
-            this.setCanEnterOpenDoors(false);
+            this.setCanPathThroughDoors(false);
             this.setCanSwim(true);
             this.setRangeMultiplier(48.0F);
         }
