@@ -1,18 +1,18 @@
 package com.iafenvoy.ghast.entity.goal;
 
 import com.iafenvoy.ghast.entity.HappyGhastEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.recipe.Ingredient;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
+import java.util.function.Predicate;
 
 public class HappyGhastTemptGoal extends Goal {
-    private static final TargetPredicate TEMPTING_ENTITY_PREDICATE = TargetPredicate.createNonAttackable().setBaseMaxDistance(32).ignoreVisibility();
-    private final TargetPredicate predicate;
+    private final Predicate<Entity> predicate;
     protected final HappyGhastEntity happyGhast;
     private final double speed;
     @Nullable
@@ -26,7 +26,7 @@ public class HappyGhastTemptGoal extends Goal {
         this.speed = 1.2;
         this.food = food;
         this.setControls(EnumSet.of(Control.MOVE, Control.LOOK));
-        this.predicate = TEMPTING_ENTITY_PREDICATE.copy().setPredicate(this::isTemptedBy);
+        this.predicate = this::isTemptedBy;
     }
 
     @Override
@@ -35,13 +35,13 @@ public class HappyGhastTemptGoal extends Goal {
             --this.cooldown;
             return false;
         } else {
-            this.closestPlayer = this.happyGhast.getWorld().getClosestPlayer(this.predicate, this.happyGhast);
+            this.closestPlayer = this.happyGhast.getWorld().getClosestPlayer(this.happyGhast.getX(), this.happyGhast.getY(), this.happyGhast.getZ(), 32, this.predicate);
             return this.closestPlayer != null;
         }
     }
 
-    private boolean isTemptedBy(LivingEntity entity) {
-        return this.food.test(entity.getMainHandStack()) || this.food.test(entity.getOffHandStack());
+    private boolean isTemptedBy(Entity entity) {
+        return entity instanceof LivingEntity living && (this.food.test(living.getMainHandStack()) || this.food.test(living.getOffHandStack()));
     }
 
     @Override

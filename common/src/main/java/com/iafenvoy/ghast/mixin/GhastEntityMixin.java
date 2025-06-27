@@ -5,6 +5,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.FlyingEntity;
 import net.minecraft.entity.mob.GhastEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -24,7 +25,7 @@ public abstract class GhastEntityMixin extends FlyingEntity {
     }
 
     @Inject(method = "damage", at = @At("HEAD"))
-    private void addDiscDrop(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
-        if (isFireballFromPlayer(source)) this.dropItem(HGItems.MUSIC_DISC_TEARS.get());
+    private void addDiscDrop(ServerWorld world, DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+        if (isFireballFromPlayer(source)) this.dropItem(world, HGItems.MUSIC_DISC_TEARS.get());
     }
 }

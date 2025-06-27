@@ -29,16 +29,18 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
+import net.minecraft.world.WorldView;
+import net.minecraft.world.tick.ScheduledTickView;
 import org.jetbrains.annotations.Nullable;
 
 public class DriedGhastBlock extends HorizontalFacingBlock implements Waterloggable {
-    private static final MapCodec<DriedGhastBlock> CODEC = createCodec(settings -> new DriedGhastBlock());
+    private static final MapCodec<DriedGhastBlock> CODEC = createCodec(DriedGhastBlock::new);
     public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
     public static final IntProperty HYDRATION = IntProperty.of("hydration", 0, 3);
     private static final VoxelShape SHAPE = createCuboidShape(3, 0, 3, 13, 10, 13);
 
-    public DriedGhastBlock() {
-        super(Settings.create().mapColor(MapColor.GRAY).breakInstantly().sounds(HGSounds.DRIED_GHAST.get()).nonOpaque().ticksRandomly());
+    public DriedGhastBlock(AbstractBlock.Settings settings) {
+        super(settings.mapColor(MapColor.GRAY).breakInstantly().sounds(HGSounds.DRIED_GHAST.get()).nonOpaque().ticksRandomly());
         this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(HYDRATION, 0).with(WATERLOGGED, false));
     }
 
@@ -47,11 +49,12 @@ public class DriedGhastBlock extends HorizontalFacingBlock implements Waterlogga
         builder.add(FACING, HYDRATION, WATERLOGGED);
     }
 
+
     @Override
-    public BlockState getStateForNeighborUpdate(BlockState state, Direction facing, BlockState facingState, WorldAccess world, BlockPos currentPos, BlockPos facingPos) {
+    protected BlockState getStateForNeighborUpdate(BlockState state, WorldView world, ScheduledTickView tickView, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, Random random) {
         if (state.get(WATERLOGGED))
-            world.scheduleFluidTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(world));
-        return super.getStateForNeighborUpdate(state, facing, facingState, world, currentPos, facingPos);
+            tickView.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+        return super.getStateForNeighborUpdate(state, world, tickView, pos, direction, neighborPos, neighborState, random);
     }
 
     @Override
@@ -88,7 +91,7 @@ public class DriedGhastBlock extends HorizontalFacingBlock implements Waterlogga
 
     private void spawnGhastling(ServerWorld world, BlockPos pos, BlockState state) {
         world.removeBlock(pos, false);
-        HappyGhastEntity ghast = HappyGhastEntity.generateChild(world, pos, SpawnReason.BREEDING, state.get(FACING).asRotation());
+        HappyGhastEntity ghast = HappyGhastEntity.generateChild(world, pos, SpawnReason.BREEDING, state.get(FACING).getPositiveHorizontalDegrees());
         world.spawnEntity(ghast);
         world.playSoundFromEntity(null, ghast, HGSounds.ENTITY_GHASTLING_SPAWN.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
     }

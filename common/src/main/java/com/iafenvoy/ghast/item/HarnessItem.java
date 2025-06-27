@@ -27,8 +27,8 @@ public class HarnessItem extends Item {
         }
     };
 
-    public HarnessItem(DyeColor color) {
-        super(new Settings().maxCount(1));
+    public HarnessItem(Item.Settings settings, DyeColor color) {
+        super(settings.maxCount(1));
         this.color = color;
         BY_COLOR.put(this.color, this);
         DispenserBlock.registerBehavior(this, DISPENSER_BEHAVIOR);
