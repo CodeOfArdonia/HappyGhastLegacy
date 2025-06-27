@@ -300,6 +300,7 @@ public class HappyGhastEntity extends AnimalEntity {
 
     @Override
     protected Vec3d getControlledMovementInput(LivingEntity controllingPlayer, Vec3d movementInput) {
+        if (this.shouldStay()) return Vec3d.ZERO;
         float f = controllingPlayer.sidewaysSpeed;
         float g = 0.0F;
         float h = 0.0F;
@@ -315,7 +316,7 @@ public class HappyGhastEntity extends AnimalEntity {
         }
         if (((LivingEntityAccessor) controllingPlayer).isJumping())
             h += 0.5F;
-        return new Vec3d(f, h, g).multiply(0.18F);
+        return new Vec3d(f, h, g).multiply(0.3F);
     }
 
     protected Vec2f getGhastRotation(LivingEntity controllingEntity) {
@@ -454,12 +455,12 @@ public class HappyGhastEntity extends AnimalEntity {
 
     public static DefaultAttributeContainer.Builder createAttributes() {
         return MobEntity.createMobAttributes()
-                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.18D)
-                .add(EntityAttributes.GENERIC_MAX_HEALTH, 40.0D)
-                .add(EntityAttributes.GENERIC_ARMOR, 0.0D)
-                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.0D)
-                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 64.0D)
-                .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.32D);
+                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.18)
+                .add(EntityAttributes.GENERIC_MAX_HEALTH, 20)
+                .add(EntityAttributes.GENERIC_ARMOR, 0)
+                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3)
+                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 64)
+                .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.32);
     }
 
     public static void updateYaw(MobEntity ghast) {
