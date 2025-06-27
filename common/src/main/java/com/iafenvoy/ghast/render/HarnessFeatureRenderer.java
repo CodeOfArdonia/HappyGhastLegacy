@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
 class HarnessFeatureRenderer extends FeatureRenderer<HappyGhastEntity, GhastEntityModel<HappyGhastEntity>> {
+
     private final HappyGhastHarnessEntityModel model;
 
     public HarnessFeatureRenderer(FeatureRendererContext<HappyGhastEntity, GhastEntityModel<HappyGhastEntity>> ctx, HappyGhastHarnessEntityModel model) {
@@ -32,7 +33,7 @@ class HarnessFeatureRenderer extends FeatureRenderer<HappyGhastEntity, GhastEnti
             matrices.scale(1.05F, 1.05F, 1.05F);
             matrices.translate(0.0F, 0.05F, 0.0F);
             this.model.setAngles(entity, limbAngle, limbDistance, animationProgress, headYaw, headPitch);
-            this.model.render(matrices, vertexConsumer, light, LivingEntityRenderer.getOverlay(entity, 0), 1, 1, 1, 1);
+            this.model.render(matrices, vertexConsumer, light, LivingEntityRenderer.getOverlay(entity, 0), -1);
             matrices.pop();
         }
     }

@@ -4,6 +4,7 @@ import com.iafenvoy.ghast.entity.HappyGhastEntity;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.dispenser.DispenserBehavior;
 import net.minecraft.block.dispenser.ItemDispenserBehavior;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DyeColor;
@@ -34,7 +35,7 @@ public class HarnessItem extends Item {
     }
 
     @Override
-    public int getMaxUseTime(ItemStack itemstack) {
+    public int getMaxUseTime(ItemStack stack, LivingEntity user) {
         return 0;
     }
 
@@ -47,8 +48,8 @@ public class HarnessItem extends Item {
     }
 
     public static boolean dispenseArmor(BlockPointer pointer, ItemStack armor) {
-        BlockPos blockPos = pointer.getPos().offset(pointer.getBlockState().get(DispenserBlock.FACING));
-        List<HappyGhastEntity> list = pointer.getWorld().getEntitiesByClass(HappyGhastEntity.class, new Box(blockPos), happyGhast -> happyGhast.getBodyArmor().isEmpty());
+        BlockPos blockPos = pointer.pos().offset(pointer.state().get(DispenserBlock.FACING));
+        List<HappyGhastEntity> list = pointer.world().getEntitiesByClass(HappyGhastEntity.class, new Box(blockPos), happyGhast -> happyGhast.getBodyArmor().isEmpty());
         if (list.isEmpty()) return false;
         else {
             list.get(0).setBodyArmor(armor.split(1));

@@ -2,7 +2,6 @@ package com.iafenvoy.ghast.registry;
 
 import com.iafenvoy.ghast.HappyGhastLegacy;
 import com.iafenvoy.ghast.item.HarnessItem;
-import dev.architectury.core.item.ArchitecturyRecordItem;
 import dev.architectury.core.item.ArchitecturySpawnEggItem;
 import dev.architectury.registry.CreativeTabRegistry;
 import dev.architectury.registry.registries.DeferredRegister;
@@ -37,7 +36,7 @@ public final class HGItems {
     public static final RegistrySupplier<Item> RED_HARNESS = register("red_harness", () -> new HarnessItem(DyeColor.RED));
     public static final RegistrySupplier<Item> WHITE_HARNESS = register("white_harness", () -> new HarnessItem(DyeColor.WHITE));
     public static final RegistrySupplier<Item> YELLOW_HARNESS = register("yellow_harness", () -> new HarnessItem(DyeColor.YELLOW));
-    public static final RegistrySupplier<Item> MUSIC_DISC_TEARS = register("music_disc_tears", () -> new ArchitecturyRecordItem(10, HGSounds.TEARS, new Item.Settings().maxCount(1).rarity(Rarity.UNCOMMON), 175));
+    public static final RegistrySupplier<Item> MUSIC_DISC_TEARS = register("music_disc_tears", () -> new Item(new Item.Settings().maxCount(1).rarity(Rarity.UNCOMMON).jukeboxPlayable(HGSongs.TEARS)));
 
     public static <T extends Item> RegistrySupplier<T> register(String id, Supplier<T> item) {
         return REGISTRY.register(id, item);

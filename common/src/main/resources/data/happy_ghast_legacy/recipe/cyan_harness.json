@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "aaa",
+    "bcb"
+  ],
+  "key": {
+    "a": {
+      "item": "minecraft:leather"
+    },
+    "b": {
+      "item": "minecraft:glass"
+    },
+    "c": {
+      "item": "minecraft:cyan_wool"
+    }
+  },
+  "result": {
+    "id": "happy_ghast_legacy:cyan_harness",
+    "count": 1
+  }
+}

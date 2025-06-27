@@ -18,10 +18,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Camera.class)
 public abstract class CameraMixin {
     @Shadow
-    protected abstract void moveBy(double x, double y, double z);
+    protected abstract void moveBy(float f, float g, float h);
 
     @Shadow
-    protected abstract double clipToSpace(double desiredCameraDistance);
+    protected abstract float clipToSpace(float g);
 
     @Inject(method = "update", at = @At("RETURN"))
     private void adjustWhenOnGhast(BlockView area, Entity focusedEntity, boolean thirdPerson, boolean inverseView, float tickDelta, CallbackInfo ci) {
