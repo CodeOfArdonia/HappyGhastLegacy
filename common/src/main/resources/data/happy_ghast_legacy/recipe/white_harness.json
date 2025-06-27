@@ -5,15 +5,9 @@
     "bcb"
   ],
   "key": {
-    "a": {
-      "item": "minecraft:leather"
-    },
-    "b": {
-      "item": "minecraft:glass"
-    },
-    "c": {
-      "item": "minecraft:white_wool"
-    }
+    "a": "minecraft:leather",
+    "b": "minecraft:glass",
+    "c": "minecraft:white_wool"
   },
   "result": {
     "id": "happy_ghast_legacy:white_harness",

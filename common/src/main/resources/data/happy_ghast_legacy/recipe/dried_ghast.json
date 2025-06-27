@@ -6,12 +6,8 @@
     "ttt"
   ],
   "key": {
-    "t": {
-      "item": "minecraft:ghast_tear"
-    },
-    "b": {
-      "item": "minecraft:soul_sand"
-    }
+    "t": "minecraft:ghast_tear",
+    "b": "minecraft:soul_sand"
   },
   "result": {
     "id": "happy_ghast_legacy:dried_ghast",

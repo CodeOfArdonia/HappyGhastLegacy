@@ -1,12 +1,8 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    {
-      "tag": "happy_ghast_legacy:harness"
-    },
-    {
-      "item": "minecraft:magenta_dye"
-    }
+    "#happy_ghast_legacy:harness",
+    "minecraft:magenta_dye"
   ],
   "result": {
     "id": "happy_ghast_legacy:magenta_harness",
