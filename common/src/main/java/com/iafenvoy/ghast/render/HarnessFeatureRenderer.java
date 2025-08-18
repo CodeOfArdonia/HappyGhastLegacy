@@ -30,8 +30,8 @@ class HarnessFeatureRenderer extends FeatureRenderer<HappyGhastRenderState, Ghas
         if (!stack.isEmpty() && !state.baby && stack.getItem() instanceof HarnessItem harness) {
             VertexConsumer vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getEntityCutoutNoCull(Identifier.of(HappyGhastLegacy.MOD_ID, "textures/entity/equipment/%s_harness.png".formatted(harness.getColor().asString()))));
             matrices.push();
-            matrices.scale(4.725F, 4.725F, 4.725F);
-            matrices.translate(0, -1.05, 0);
+            matrices.scale(1.01F, 1.01F, 1.01F);
+            matrices.translate(0, 0.08, 0);
             this.model.setAngles(state);
             this.model.render(matrices, vertexConsumer, light, LivingEntityRenderer.getOverlay(state, 0), -1);
             matrices.pop();

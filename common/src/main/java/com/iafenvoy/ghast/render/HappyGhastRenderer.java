@@ -34,7 +34,7 @@ public class HappyGhastRenderer extends MobEntityRenderer<HappyGhastEntity, Happ
 
     @Override
     protected void scale(HappyGhastRenderState state, MatrixStack matrices) {
-        float scale = state.baby ? 0.375F : 1;
+        float scale = state.baby ? 1.771875F : 4.725F;
         matrices.scale(scale, scale, scale);
     }
 
